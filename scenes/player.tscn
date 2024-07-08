@@ -176,11 +176,14 @@ _data = {
 "running": SubResource("Animation_5a6qr")
 }
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("_sprite", "_animationPlayer")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("_sprite", "_animationPlayer", "_coyoteTimer", "_jumpRequestTimer")]
 script = ExtResource("1_q2an3")
-JumpVelocity = -379.68
+RunSpeed = 160.0
+JumpVelocity = -380.0
 _sprite = NodePath("Sprite2D")
 _animationPlayer = NodePath("AnimationPlayer")
+_coyoteTimer = NodePath("CoyoteTimer")
+_jumpRequestTimer = NodePath("JumpRequestTimer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -28)
@@ -197,3 +200,11 @@ shape = SubResource("RectangleShape2D_3v5um")
 libraries = {
 "": SubResource("AnimationLibrary_ene0o")
 }
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="JumpRequestTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
