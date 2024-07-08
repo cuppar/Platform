@@ -6,7 +6,7 @@ public partial class World : Node2D
 {
     public override void _Ready()
     {
-        var used = _tileMap.GetUsedRect();
+        var used = _tileMap.GetUsedRect().Grow(-1);
         var tileSize = _tileMap.TileSet.TileSize;
         _camera.LimitTop = used.Position.Y * tileSize.Y;
         _camera.LimitBottom = used.End.Y * tileSize.Y;
