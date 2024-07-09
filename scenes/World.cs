@@ -19,9 +19,9 @@ public partial class World : Node2D
     #region Child
 
     [ExportGroup("ChildDontChange")] [Export]
-    private Camera2D _camera;
+    private Camera2D _camera = null!;
 
-    [Export] private TileMap _tileMap;
+    [Export] private TileMap _tileMap = null!;
 
     #endregion
 }
