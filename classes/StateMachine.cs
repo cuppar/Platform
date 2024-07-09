@@ -7,7 +7,7 @@ public partial class StateMachine<TState> : Node where TState : struct, Enum
 {
     private TState _currentState;
 
-    public TState CurrentState
+    private TState CurrentState
     {
         get => _currentState;
         set
