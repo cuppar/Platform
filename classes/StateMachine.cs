@@ -5,7 +5,7 @@ namespace Platform.classes;
 
 public partial class StateMachine<TState> : Node where TState : struct, Enum
 {
-    private TState _currentState;
+    private TState _currentState; 
 
     private TState CurrentState
     {
@@ -17,8 +17,11 @@ public partial class StateMachine<TState> : Node where TState : struct, Enum
 
             owner.TransitionState(CurrentState, value);
             _currentState = value;
+            StateTime = 0;
         }
     }
+
+    public double StateTime;
 
 
     public override async void _Ready()
@@ -41,6 +44,7 @@ public partial class StateMachine<TState> : Node where TState : struct, Enum
         }
 
         owner.TickPhysics(CurrentState, delta);
+        StateTime += delta;
     }
 
     #region Nested type: OwnerIsNotIStateMachine

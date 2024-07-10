@@ -16,7 +16,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         Jump,
         Fall,
         Landing,
-        WallSliding
+        WallSliding,
+        WallJump
     }
 
     #endregion
@@ -29,16 +30,17 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     private Player()
     {
         FloorAcceleration = RunSpeed / 0.2f;
-        AirAcceleration = RunSpeed / 0.02f;
+        AirAcceleration = RunSpeed / 0.1f;
 
-        var stateMachine = new StateMachine<State>();
-        stateMachine.Name = "StateMachine";
-        AddChild(stateMachine);
-        stateMachine.Owner = this;
+        _stateMachine = new StateMachine<State>();
+        _stateMachine.Name = "StateMachine";
+        AddChild(_stateMachine);
+        _stateMachine.Owner = this;
     }
 
     [Export] public float RunSpeed { get; set; } = 200;
     [Export] public float JumpVelocity { get; set; } = -300;
+    [Export] public Vector2 WallJumpVelocity { get; set; } = new(500, -300);
     [Export] public float FloorAcceleration { get; set; }
     [Export] public float AirAcceleration { get; set; }
 
@@ -46,6 +48,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TransitionState(State fromState, State toState)
     {
+        GD.Print($"[{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
             _coyoteTimer.Stop();
 
@@ -73,6 +76,11 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 break;
             case State.WallSliding:
                 _animationPlayer.Play("wall_sliding");
+                break;
+            case State.WallJump:
+                _animationPlayer.Play("jump");
+                Velocity = WallJumpVelocity with { X = WallJumpVelocity.X * GetWallNormal().X };
+                _jumpRequestTimer.Stop();
                 break;
 
             default:
@@ -115,7 +123,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Fall:
                 if (IsOnFloor())
                     return isStill ? State.Landing : State.Running;
-                if (IsOnWall() && _handChecker.IsColliding() && _footChecker.IsColliding())
+                if (CanWallSlide())
                     return State.WallSliding;
                 break;
             case State.Landing:
@@ -128,6 +136,14 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 if (IsOnFloor())
                     return State.Idle;
                 if (!IsOnWall())
+                    return State.Fall;
+                if (_jumpRequestTimer.TimeLeft > 0 && !_isFirstTick)
+                    return State.WallJump;
+                break;
+            case State.WallJump:
+                if (CanWallSlide() && !_isFirstTick)
+                    return State.WallSliding;
+                if (Velocity.Y >= 0)
                     return State.Fall;
                 break;
             default:
@@ -154,11 +170,17 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 Move(_gravity, delta);
                 break;
             case State.Landing:
-                Stand(delta);
+                Stand(_gravity, delta);
                 break;
             case State.WallSliding:
                 Move(_gravity / 3, delta);
                 _graphics.Scale = _graphics.Scale with { X = GetWallNormal().X };
+                break;
+            case State.WallJump:
+                if (_stateMachine.StateTime < 0.1)
+                    Stand(_isFirstTick ? 0 : _gravity, delta);
+                else
+                    Move(_gravity, delta);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -169,12 +191,15 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     #endregion
 
-    private void Stand(double delta)
+    private bool CanWallSlide() => IsOnWall() && _handChecker.IsColliding() && _footChecker.IsColliding();
+
+
+    private void Stand(float gravity, double delta)
     {
         var acceleration = IsOnFloor() ? FloorAcceleration : AirAcceleration;
         Velocity = Velocity with
         {
-            Y = Velocity.Y + _gravity * (float)delta,
+            Y = Velocity.Y + gravity * (float)delta,
             X = Mathf.MoveToward(Velocity.X, 0, acceleration * (float)delta)
         };
 
@@ -224,6 +249,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] private Timer _jumpRequestTimer = null!;
     [Export] private RayCast2D _handChecker = null!;
     [Export] private RayCast2D _footChecker = null!;
+    private StateMachine<State> _stateMachine;
 
     #endregion
 }
