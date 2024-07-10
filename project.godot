@@ -28,6 +28,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="Platform"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/com.timothyqiu.animation-resetter/plugin.cfg")
+
 [input]
 
 move_left={

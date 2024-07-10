@@ -15,7 +15,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         Running,
         Jump,
         Fall,
-        Landing
+        Landing,
+        WallSliding,
     }
 
     #endregion
@@ -69,6 +70,10 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Landing:
                 _animationPlayer.Play("landing");
                 break;
+            case State.WallSliding:
+                _animationPlayer.Play("wall_sliding");
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(toState), toState, null);
         }
@@ -109,10 +114,20 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Fall:
                 if (IsOnFloor())
                     return isStill ? State.Landing : State.Running;
+                if (IsOnWall() && _handChecker.IsColliding() && _footChecker.IsColliding())
+                    return State.WallSliding;
                 break;
             case State.Landing:
+                if (!isStill)
+                    return State.Running;
                 if (!_animationPlayer.IsPlaying())
                     return State.Idle;
+                break;
+            case State.WallSliding:
+                if (IsOnFloor())
+                    return State.Idle;
+                if (!IsOnWall())
+                    return State.Fall;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -139,6 +154,10 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 break;
             case State.Landing:
                 Stand(delta);
+                break;
+            case State.WallSliding:
+                Move(_gravity / 3, delta);
+                _graphics.Scale = _graphics.Scale with { X = GetWallNormal().X };
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -172,7 +191,10 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         };
 
         if (!Mathf.IsZeroApprox(direction))
-            _sprite.FlipH = direction < 0;
+            _graphics.Scale = _graphics.Scale with
+            {
+                X = direction < 0 ? -1 : +1,
+            };
 
         MoveAndSlide();
     }
@@ -194,11 +216,13 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     #region Child
 
     [ExportGroup("ChildDontChange")] [Export]
-    private Sprite2D _sprite = null!;
+    private Node2D _graphics = null!;
 
     [Export] private AnimationPlayer _animationPlayer = null!;
     [Export] private Timer _coyoteTimer = null!;
     [Export] private Timer _jumpRequestTimer = null!;
+    [Export] private RayCast2D _handChecker;
+    [Export] private RayCast2D _footChecker;
 
     #endregion
 }
