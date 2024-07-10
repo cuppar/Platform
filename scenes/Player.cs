@@ -16,7 +16,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         Jump,
         Fall,
         Landing,
-        WallSliding,
+        WallSliding
     }
 
     #endregion
@@ -30,6 +30,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     {
         FloorAcceleration = RunSpeed / 0.2f;
         AirAcceleration = RunSpeed / 0.02f;
+
         var stateMachine = new StateMachine<State>();
         stateMachine.Name = "StateMachine";
         AddChild(stateMachine);
@@ -193,7 +194,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         if (!Mathf.IsZeroApprox(direction))
             _graphics.Scale = _graphics.Scale with
             {
-                X = direction < 0 ? -1 : +1,
+                X = direction < 0 ? -1 : +1
             };
 
         MoveAndSlide();
@@ -221,8 +222,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] private AnimationPlayer _animationPlayer = null!;
     [Export] private Timer _coyoteTimer = null!;
     [Export] private Timer _jumpRequestTimer = null!;
-    [Export] private RayCast2D _handChecker;
-    [Export] private RayCast2D _footChecker;
+    [Export] private RayCast2D _handChecker = null!;
+    [Export] private RayCast2D _footChecker = null!;
 
     #endregion
 }
