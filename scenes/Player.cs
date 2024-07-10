@@ -32,10 +32,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         FloorAcceleration = RunSpeed / 0.2f;
         AirAcceleration = RunSpeed / 0.1f;
 
-        _stateMachine = new StateMachine<State>();
-        _stateMachine.Name = "StateMachine";
-        AddChild(_stateMachine);
-        _stateMachine.Owner = this;
+        _stateMachine = StateMachine<State>.Create(this);
     }
 
     [Export] public float RunSpeed { get; set; } = 200;

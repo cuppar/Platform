@@ -3,9 +3,10 @@ using Godot;
 
 namespace Platform.classes;
 
-public partial class StateMachine<TState> : Node where TState : struct, Enum
+public partial class StateMachine<TState> : Node
+    where TState : struct, Enum
 {
-    private TState _currentState; 
+    private TState _currentState;
 
     private TState CurrentState
     {
@@ -23,6 +24,14 @@ public partial class StateMachine<TState> : Node where TState : struct, Enum
 
     public double StateTime;
 
+    public static StateMachine<TState> Create(Node owner)
+    {
+        var machine = new StateMachine<TState>();
+        machine.Name = "StateMachine";
+        owner.AddChild(machine);
+        machine.Owner = owner;
+        return machine;
+    }
 
     public override async void _Ready()
     {
