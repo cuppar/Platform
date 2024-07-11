@@ -45,7 +45,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        GD.Print($"[{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        // GD.Print($"[{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
             _coyoteTimer.Stop();
 
@@ -188,7 +189,10 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     #endregion
 
-    private bool CanWallSlide() => IsOnWall() && _handChecker.IsColliding() && _footChecker.IsColliding();
+    private bool CanWallSlide()
+    {
+        return IsOnWall() && _handChecker.IsColliding() && _footChecker.IsColliding();
+    }
 
 
     private void Stand(float gravity, double delta)

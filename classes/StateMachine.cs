@@ -8,6 +8,8 @@ public partial class StateMachine<TState> : Node
 {
     private TState _currentState;
 
+    public double StateTime;
+
     private TState CurrentState
     {
         get => _currentState;
@@ -21,8 +23,6 @@ public partial class StateMachine<TState> : Node
             StateTime = 0;
         }
     }
-
-    public double StateTime;
 
     public static StateMachine<TState> Create(Node owner)
     {

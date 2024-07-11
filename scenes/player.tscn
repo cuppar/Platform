@@ -554,6 +554,7 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("_graphics", "_animationPlayer", "_coyoteTimer", "_jumpRequestTimer", "_handChecker", "_footChecker")]
+collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
 WallJumpVelocity = Vector2(450, -300)
