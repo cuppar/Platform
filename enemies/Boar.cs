@@ -26,7 +26,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        GD.Print($"[{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         switch (toState)
         {
@@ -54,7 +54,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
 
     public State GetNextState(State currentState)
     {
-        if (_playerChecker.IsColliding())
+        if (CanSeePlayer())
             return State.Run;
 
         switch (currentState)
@@ -89,7 +89,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
                 if (_wallChecker.IsColliding() || !_floorChecker.IsColliding())
                     Direction = (DirectionEnum)((int)Direction * -1);
                 Move(MaxSpeed, delta);
-                if (_playerChecker.IsColliding())
+                if (CanSeePlayer())
                     _calmDownTimer.Start();
                 break;
             case State.Walk:
@@ -101,6 +101,13 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
     }
 
     #endregion
+
+    private bool CanSeePlayer()
+    {
+        if (!_playerChecker.IsColliding())
+            return false;
+        return _playerChecker.GetCollider() is Player;
+    }
 
     public override void _Ready()
     {

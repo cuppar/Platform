@@ -17,15 +17,26 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         Fall,
         Landing,
         WallSliding,
-        WallJump
+        WallJump,
+        Attack1,
+        Attack2,
+        Attack3
     }
 
     #endregion
 
-    private readonly State[] _groundStates = { State.Idle, State.Running, State.Landing };
+    private readonly State[] _groundStates =
+    {
+        State.Idle, State.Running, State.Landing,
+        State.Attack1, State.Attack2, State.Attack3
+    };
+
     private float _gravity = (float)ProjectSettings.GetSetting("physics/2d/default_gravity");
 
+    private bool _isComboRequested;
+
     private bool _isFirstTick;
+    [Export] public bool CanCombo;
 
     private Player()
     {
@@ -45,7 +56,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        // GD.Print($"[{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
             _coyoteTimer.Stop();
@@ -80,6 +91,18 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 Velocity = WallJumpVelocity with { X = WallJumpVelocity.X * GetWallNormal().X };
                 _jumpRequestTimer.Stop();
                 break;
+            case State.Attack1:
+                _animationPlayer.Play("attack_1");
+                _isComboRequested = false;
+                break;
+            case State.Attack2:
+                _animationPlayer.Play("attack_2");
+                _isComboRequested = false;
+                break;
+            case State.Attack3:
+                _animationPlayer.Play("attack_3");
+                _isComboRequested = false;
+                break;
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(toState), toState, null);
@@ -96,6 +119,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         if (shouldJump)
             return State.Jump;
 
+        if (_groundStates.Contains(currentState) && !IsOnFloor())
+            return State.Fall;
+
 
         var direction = Input.GetAxis("move_left", "move_right");
         var isStill = Mathf.IsZeroApprox(direction) && Mathf.IsZeroApprox(Velocity.X);
@@ -103,14 +129,14 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         switch (currentState)
         {
             case State.Idle:
-                if (!IsOnFloor())
-                    return State.Fall;
+                if (Input.IsActionJustPressed("attack"))
+                    return State.Attack1;
                 if (!isStill)
                     return State.Running;
                 break;
             case State.Running:
-                if (!IsOnFloor())
-                    return State.Fall;
+                if (Input.IsActionJustPressed("attack"))
+                    return State.Attack1;
                 if (isStill)
                     return State.Idle;
                 break;
@@ -143,6 +169,18 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                     return State.WallSliding;
                 if (Velocity.Y >= 0)
                     return State.Fall;
+                break;
+            case State.Attack1:
+                if (!_animationPlayer.IsPlaying())
+                    return _isComboRequested ? State.Attack2 : State.Idle;
+                break;
+            case State.Attack2:
+                if (!_animationPlayer.IsPlaying())
+                    return _isComboRequested ? State.Attack3 : State.Idle;
+                break;
+            case State.Attack3:
+                if (!_animationPlayer.IsPlaying())
+                    return State.Idle;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -179,6 +217,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                     Stand(_isFirstTick ? 0 : _gravity, delta);
                 else
                     Move(_gravity, delta);
+                break;
+            case State.Attack1 or State.Attack2 or State.Attack3:
+                Stand(_gravity, delta);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -238,6 +279,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             if (Velocity.Y < JumpVelocity / 2)
                 Velocity = Velocity with { Y = JumpVelocity / 2 };
         }
+
+        if (@event.IsActionPressed("attack") && CanCombo)
+            _isComboRequested = true;
     }
 
     #region Child
