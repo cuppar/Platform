@@ -25,6 +25,11 @@ public partial class Enemy : CharacterBody2D
         MoveAndSlide();
     }
 
+    private void Die()
+    {
+        QueueFree();
+    }
+
     #region Direction
 
     protected enum DirectionEnum
@@ -66,6 +71,7 @@ public partial class Enemy : CharacterBody2D
     [Export] private CollisionShape2D _collisionShape = null!;
     [Export] protected AnimationPlayer AnimationPlayer = null!;
     [Export] protected HurtBox HurtBox = null!;
+    [Export] protected Stats Stats = null!;
 
     #endregion
 }

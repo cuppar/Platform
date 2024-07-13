@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Godot;
 using Platform.classes;
 
@@ -12,37 +13,33 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
     {
         Idle,
         Run,
-        Walk
+        Walk,
+        Hurt,
+        Dying
     }
 
     #endregion
+
+    private Damage? _pendingDamage;
+
+    [Export] public float KnockBackAmount = 512;
 
     public Boar()
     {
         _stateMachine = StateMachine<State>.Create(this);
     }
 
-    private void OnHurt(HitBox hitBox)
-    {
-        GD.Print($"猪被[{hitBox.Owner.Name}]打了");
-    }
-
-
     #region IStateMachine<State> Members
 
     public void TransitionState(State fromState, State toState)
     {
-        // GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
-
+        GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
         switch (toState)
         {
             case State.Idle:
                 AnimationPlayer.Play("idle");
                 if (_wallChecker.IsColliding())
                     Direction = (DirectionEnum)((int)Direction * -1);
-                break;
-            case State.Run:
-                AnimationPlayer.Play("run");
                 break;
             case State.Walk:
                 AnimationPlayer.Play("walk");
@@ -53,6 +50,25 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
                 }
 
                 break;
+            case State.Run:
+                AnimationPlayer.Play("run");
+                break;
+            case State.Hurt:
+                AnimationPlayer.Play("hit");
+                Debug.Assert(_pendingDamage != null);
+
+                Stats.Health -= _pendingDamage.Amount;
+                var hitDirection = _pendingDamage.Source.GlobalPosition.DirectionTo(GlobalPosition);
+
+                Velocity = hitDirection * KnockBackAmount;
+                Direction = hitDirection.X > 0 ? DirectionEnum.Left : DirectionEnum.Right;
+
+                _pendingDamage = null;
+
+                break;
+            case State.Dying:
+                AnimationPlayer.Play("die");
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(toState), toState, null);
         }
@@ -60,22 +76,35 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
 
     public State GetNextState(State currentState)
     {
-        if (CanSeePlayer())
-            return State.Run;
+        if (Stats.Health <= 0)
+            return State.Dying;
+
+        if (_pendingDamage != null)
+            return State.Hurt;
 
         switch (currentState)
         {
             case State.Idle:
+                if (CanSeePlayer())
+                    return State.Run;
                 if (_stateMachine.StateTime > 2)
                     return State.Walk;
                 break;
-            case State.Run:
-                if (_calmDownTimer.IsStopped())
-                    return State.Walk;
-                break;
             case State.Walk:
+                if (CanSeePlayer())
+                    return State.Run;
                 if (_wallChecker.IsColliding() || !_floorChecker.IsColliding())
                     return State.Idle;
+                break;
+            case State.Run:
+                if (!CanSeePlayer() && _calmDownTimer.IsStopped())
+                    return State.Walk;
+                break;
+            case State.Hurt:
+                if (!AnimationPlayer.IsPlaying())
+                    return State.Run;
+                break;
+            case State.Dying:
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -88,8 +117,11 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
     {
         switch (currentState)
         {
-            case State.Idle:
+            case State.Idle or State.Hurt or State.Dying:
                 Move(0, delta);
+                break;
+            case State.Walk:
+                Move(MaxSpeed / 3, delta);
                 break;
             case State.Run:
                 if (_wallChecker.IsColliding() || !_floorChecker.IsColliding())
@@ -98,15 +130,18 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
                 if (CanSeePlayer())
                     _calmDownTimer.Start();
                 break;
-            case State.Walk:
-                Move(MaxSpeed / 3, delta);
-                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
         }
     }
 
     #endregion
+
+    private void OnHurt(HitBox hitBox)
+    {
+        _pendingDamage = new Damage((Node2D)hitBox.Owner, 1);
+    }
+
 
     private bool CanSeePlayer()
     {

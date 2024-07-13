@@ -749,6 +749,7 @@ layer_2/tile_data = PackedInt32Array(655362, 524288, 2, 655363, 589824, 3, 65537
 
 [node name="Boar" parent="." instance=ExtResource("6_cevtd")]
 position = Vector2(548, 141)
+KnockBackAmount = 512.0
 
 [node name="Player" parent="." instance=ExtResource("2_pm1hy")]
 position = Vector2(371, 194)

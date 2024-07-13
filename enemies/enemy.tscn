@@ -1,16 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://ds83bfu5kxhq8"]
+[gd_scene load_steps=5 format=3 uid="uid://ds83bfu5kxhq8"]
 
 [ext_resource type="Script" path="res://enemies/Enemy.cs" id="1_1j113"]
 [ext_resource type="Script" path="res://classes/HitBox.cs" id="2_up175"]
 [ext_resource type="Script" path="res://classes/HurtBox.cs" id="3_u42js"]
+[ext_resource type="Script" path="res://classes/Stats.cs" id="4_ycqkn"]
 
-[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("_graphics", "_collisionShape", "AnimationPlayer", "_hurtBox")]
+[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("_graphics", "_collisionShape", "AnimationPlayer", "HurtBox", "Stats")]
 collision_layer = 4
 script = ExtResource("1_1j113")
 _graphics = NodePath("Graphics")
 _collisionShape = NodePath("CollisionShape2D")
 AnimationPlayer = NodePath("AnimationPlayer")
-_hurtBox = NodePath("Graphics/HurtBox")
+HurtBox = NodePath("Graphics/HurtBox")
+Stats = NodePath("Stats")
 
 [node name="Graphics" type="Node2D" parent="."]
 
@@ -25,3 +27,6 @@ script = ExtResource("3_u42js")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("4_ycqkn")
