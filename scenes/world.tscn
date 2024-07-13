@@ -747,6 +747,9 @@ layer_2/name = "Foreground"
 layer_2/enabled = false
 layer_2/tile_data = PackedInt32Array(655362, 524288, 2, 655363, 589824, 3, 655373, 524288, 3, 655375, 655360, 2, 655376, 589824, 2, 786451, 589824, 2, 786453, 524288, 3, 786454, 393216, 3, 786458, 655360, 2, 589855, 589824, 2, 589856, 655360, 2, 589858, 458752, 3, 327718, 393216, 3, 327719, 524288, 2, 589870, 393216, 3, 589873, 393216, 3, 589874, 589824, 3, 589878, 655360, 2, -786430, 524288, 2, -786427, 458752, 3, -786425, 655360, 2, -786423, 458752, 3, -786419, 655360, 2, -786417, 655360, 2, -786413, 524288, 3, -786403, 524288, 2, -327648, 524288, 2, -327647, 524288, 3)
 
+[node name="Boar" parent="." instance=ExtResource("6_cevtd")]
+position = Vector2(548, 141)
+
 [node name="Player" parent="." instance=ExtResource("2_pm1hy")]
 position = Vector2(371, 194)
 metadata/_edit_lock_ = true
@@ -759,6 +762,3 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 editor_draw_limits = true
 editor_draw_drag_margin = true
-
-[node name="Boar" parent="." instance=ExtResource("6_cevtd")]
-position = Vector2(548, 141)

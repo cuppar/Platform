@@ -1,17 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://ds83bfu5kxhq8"]
+[gd_scene load_steps=4 format=3 uid="uid://ds83bfu5kxhq8"]
 
 [ext_resource type="Script" path="res://enemies/Enemy.cs" id="1_1j113"]
+[ext_resource type="Script" path="res://classes/HitBox.cs" id="2_up175"]
+[ext_resource type="Script" path="res://classes/HurtBox.cs" id="3_u42js"]
 
-[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("_graphics", "_collisionShape", "AnimationPlayer")]
+[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("_graphics", "_collisionShape", "AnimationPlayer", "_hurtBox")]
 collision_layer = 4
 script = ExtResource("1_1j113")
 _graphics = NodePath("Graphics")
 _collisionShape = NodePath("CollisionShape2D")
 AnimationPlayer = NodePath("AnimationPlayer")
+_hurtBox = NodePath("Graphics/HurtBox")
 
 [node name="Graphics" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="Graphics"]
+
+[node name="HitBox" type="Area2D" parent="Graphics"]
+script = ExtResource("2_up175")
+
+[node name="HurtBox" type="Area2D" parent="Graphics"]
+script = ExtResource("3_u42js")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 

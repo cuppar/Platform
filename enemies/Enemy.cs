@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Platform.classes;
 
 namespace Platform.enemies;
 
@@ -64,6 +65,7 @@ public partial class Enemy : CharacterBody2D
 
     [Export] private CollisionShape2D _collisionShape = null!;
     [Export] protected AnimationPlayer AnimationPlayer = null!;
+    [Export] protected HurtBox HurtBox = null!;
 
     #endregion
 }

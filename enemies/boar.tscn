@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cjv8hvmweiqil"]
+[gd_scene load_steps=16 format=3 uid="uid://cjv8hvmweiqil"]
 
 [ext_resource type="PackedScene" uid="uid://ds83bfu5kxhq8" path="res://enemies/enemy.tscn" id="1_kgfyl"]
 [ext_resource type="Script" path="res://enemies/Boar.cs" id="2_dycw7"]
@@ -7,49 +7,14 @@
 [ext_resource type="Texture2D" uid="uid://ri7e2ee5ouko" path="res://assets/Legacy-Fantasy - High Forest 2.3/Mob/Boar/Run/Run-Sheet.png" id="4_lo3eo"]
 [ext_resource type="Texture2D" uid="uid://cuih7u34iju5a" path="res://assets/Legacy-Fantasy - High Forest 2.3/Mob/Boar/Hit-Vanish/Hit-Sheet.png" id="5_vxpdv"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wgf7o"]
+size = Vector2(23, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nwu4h"]
+size = Vector2(38, 8)
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_srbhn"]
 radius = 11.0
-
-[sub_resource type="Animation" id="Animation_dktvs"]
-resource_name = "idle"
-length = 0.4
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Graphics/Sprite2D:texture")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [ExtResource("2_s63tv")]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Graphics/Sprite2D:hframes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [4]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Graphics/Sprite2D:frame")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
 
 [sub_resource type="Animation" id="Animation_vwnaj"]
 length = 0.001
@@ -90,10 +55,9 @@ tracks/2/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_k3d41"]
-resource_name = "walk"
-length = 0.6
-loop_mode = 1
+[sub_resource type="Animation" id="Animation_sgr5b"]
+resource_name = "hit"
+length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -104,7 +68,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_ka7wu")]
+"values": [ExtResource("5_vxpdv")]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -116,7 +80,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [6]
+"values": [4]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -125,10 +89,51 @@ tracks/2/path = NodePath("Graphics/Sprite2D:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3, 4, 5]
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_dktvs"]
+resource_name = "idle"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Graphics/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_s63tv")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Graphics/Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Graphics/Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
 }
 
 [sub_resource type="Animation" id="Animation_xep3g"]
@@ -172,9 +177,10 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3, 4, 5]
 }
 
-[sub_resource type="Animation" id="Animation_sgr5b"]
-resource_name = "hit"
-length = 0.4
+[sub_resource type="Animation" id="Animation_k3d41"]
+resource_name = "walk"
+length = 0.6
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -185,7 +191,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("5_vxpdv")]
+"values": [ExtResource("3_ka7wu")]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -197,7 +203,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [4]
+"values": [6]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -206,10 +212,10 @@ tracks/2/path = NodePath("Graphics/Sprite2D:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3]
+"values": [0, 1, 2, 3, 4, 5]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_itnbo"]
@@ -245,6 +251,30 @@ collision_mask = 3
 [node name="FloorChecker" type="RayCast2D" parent="Graphics" index="3"]
 position = Vector2(-15, -1)
 target_position = Vector2(0, 4)
+
+[node name="HitBox" parent="Graphics" index="4"]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/HitBox" index="0"]
+position = Vector2(-1.5, -12)
+shape = SubResource("RectangleShape2D_wgf7o")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Graphics/HitBox" index="1"]
+position = Vector2(-1, -8)
+shape = SubResource("RectangleShape2D_nwu4h")
+
+[node name="HurtBox" parent="Graphics" index="5"]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/HurtBox" index="0"]
+position = Vector2(-1.5, -12)
+shape = SubResource("RectangleShape2D_wgf7o")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Graphics/HurtBox" index="1"]
+position = Vector2(-1, -8)
+shape = SubResource("RectangleShape2D_nwu4h")
 
 [node name="CollisionShape2D" parent="." index="1"]
 position = Vector2(-1, -11)

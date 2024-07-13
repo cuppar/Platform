@@ -56,7 +56,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        // GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
             _coyoteTimer.Stop();

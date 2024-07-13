@@ -22,11 +22,17 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
         _stateMachine = StateMachine<State>.Create(this);
     }
 
+    private void OnHurt(HitBox hitBox)
+    {
+        GD.Print($"猪被[{hitBox.Owner.Name}]打了");
+    }
+
+
     #region IStateMachine<State> Members
 
     public void TransitionState(State fromState, State toState)
     {
-        GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        // GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         switch (toState)
         {
@@ -111,7 +117,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
 
     public override void _Ready()
     {
-        Move(100, 0.1);
+        HurtBox.Hurt += OnHurt;
     }
 
     #region Child
