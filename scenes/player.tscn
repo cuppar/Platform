@@ -10,13 +10,13 @@
 size = Vector2(12, 28)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sa4xg"]
-size = Vector2(20, 9)
+size = Vector2(17, 9)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kghfy"]
-size = Vector2(11, 13)
+size = Vector2(8, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hx763"]
-size = Vector2(22, 25)
+size = Vector2(14, 25)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3v5um"]
 size = Vector2(10, 27)
@@ -146,7 +146,8 @@ tracks/9/keys = {
 
 [sub_resource type="Animation" id="Animation_4kfr4"]
 resource_name = "attack_1"
-length = 0.6
+length = 0.45
+step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -178,7 +179,7 @@ tracks/2/path = NodePath("Graphics/Sprite2D:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.25, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5]
@@ -226,7 +227,7 @@ tracks/6/path = NodePath(".:CanCombo")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
@@ -238,7 +239,7 @@ tracks/7/path = NodePath("Graphics/HitBox/AttackArea1:disabled")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.4),
+"times": PackedFloat32Array(0, 0.15, 0.25),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, true]
@@ -394,7 +395,8 @@ tracks/9/keys = {
 
 [sub_resource type="Animation" id="Animation_kxj7s"]
 resource_name = "attack_3"
-length = 0.8
+length = 0.7
+step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -450,7 +452,7 @@ tracks/4/path = NodePath("Graphics/Sprite2D:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7]
@@ -486,7 +488,7 @@ tracks/7/path = NodePath("Graphics/HitBox/AttackArea3:disabled")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.3),
+"times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, true]
@@ -1321,17 +1323,17 @@ collision_mask = 16
 script = ExtResource("4_qfywi")
 
 [node name="AttackArea1" type="CollisionShape2D" parent="Graphics/HitBox"]
-position = Vector2(16, -18.5)
+position = Vector2(17.5, -18.5)
 shape = SubResource("RectangleShape2D_sa4xg")
 disabled = true
 
 [node name="AttackArea2" type="CollisionShape2D" parent="Graphics/HitBox"]
-position = Vector2(11.5, -15.5)
+position = Vector2(13, -15.5)
 shape = SubResource("RectangleShape2D_kghfy")
 disabled = true
 
 [node name="AttackArea3" type="CollisionShape2D" parent="Graphics/HitBox"]
-position = Vector2(18, -18.5)
+position = Vector2(22, -18.5)
 shape = SubResource("RectangleShape2D_hx763")
 disabled = true
 

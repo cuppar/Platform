@@ -46,8 +46,8 @@ public partial class StateMachine<TState> : Node
 
         while (true)
         {
-            var next = owner.GetNextState(CurrentState);
-            if (next.Equals(CurrentState))
+            var next = owner.GetNextState(CurrentState, out var keepCurrent);
+            if (keepCurrent)
                 break;
             CurrentState = next;
         }

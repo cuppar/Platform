@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cjv8hvmweiqil"]
+[gd_scene load_steps=16 format=3 uid="uid://cjv8hvmweiqil"]
 
 [ext_resource type="PackedScene" uid="uid://ds83bfu5kxhq8" path="res://enemies/enemy.tscn" id="1_kgfyl"]
 [ext_resource type="Script" path="res://enemies/Boar.cs" id="2_dycw7"]
@@ -9,9 +9,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wgf7o"]
 size = Vector2(23, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nwu4h"]
-size = Vector2(38, 8)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_srbhn"]
 radius = 11.0
@@ -532,10 +529,6 @@ collision_mask = 8
 position = Vector2(-1.5, -12)
 shape = SubResource("RectangleShape2D_wgf7o")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Graphics/HitBox" index="1"]
-position = Vector2(-1, -8)
-shape = SubResource("RectangleShape2D_nwu4h")
-
 [node name="HurtBox" parent="Graphics" index="5"]
 collision_layer = 16
 collision_mask = 0
@@ -543,10 +536,6 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/HurtBox" index="0"]
 position = Vector2(-1.5, -12)
 shape = SubResource("RectangleShape2D_wgf7o")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Graphics/HurtBox" index="1"]
-position = Vector2(-1, -8)
-shape = SubResource("RectangleShape2D_nwu4h")
 
 [node name="CollisionShape2D" parent="." index="1"]
 position = Vector2(-1, -11)

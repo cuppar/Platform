@@ -111,8 +111,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         _isFirstTick = true;
     }
 
-    public State GetNextState(State currentState)
+    public State GetNextState(State currentState, out bool keepCurrent)
     {
+        keepCurrent = false;
         var canJump = IsOnFloor() || _coyoteTimer.TimeLeft > 0;
         var shouldJump = canJump && _jumpRequestTimer.TimeLeft > 0;
 
@@ -186,6 +187,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
         }
 
+        keepCurrent = true;
         return currentState;
     }
 

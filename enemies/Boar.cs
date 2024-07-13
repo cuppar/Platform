@@ -74,10 +74,15 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
         }
     }
 
-    public State GetNextState(State currentState)
+    public State GetNextState(State currentState, out bool keepCurrent)
     {
+        keepCurrent = false;
         if (Stats.Health <= 0)
+        {
+            if (currentState == State.Dying)
+                keepCurrent = true;
             return State.Dying;
+        }
 
         if (_pendingDamage != null)
             return State.Hurt;
@@ -110,6 +115,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
         }
 
+        keepCurrent = true;
         return currentState;
     }
 
