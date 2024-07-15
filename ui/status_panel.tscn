@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3 uid="uid://mvsmalsxdm4m"]
+
+[ext_resource type="Texture2D" uid="uid://dtyqp10ihd7cd" path="res://assets/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="1_30vyk"]
+[ext_resource type="Script" path="res://ui/StatusPanel.cs" id="1_jhpaa"]
+[ext_resource type="Texture2D" uid="uid://csq55fwfdwfom" path="res://assets/generic_char_v0.2/png/blue/char_blue_1.png" id="2_dpr31"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ijn1k"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+texture = ExtResource("1_30vyk")
+region_rect = Rect2(323, 203, 26, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aj2x8"]
+atlas = ExtResource("2_dpr31")
+region = Rect2(22, 24, 11, 11)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g23as"]
+atlas = ExtResource("1_30vyk")
+region = Rect2(307, 21, 58, 6)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jccqy"]
+atlas = ExtResource("1_30vyk")
+region = Rect2(308, 118, 56, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cu07w"]
+atlas = ExtResource("1_30vyk")
+region = Rect2(308, 86, 56, 4)
+
+[node name="StatusPanel" type="HBoxContainer" node_paths=PackedStringArray("HealthBar")]
+script = ExtResource("1_jhpaa")
+HealthBar = NodePath("HealthBar")
+
+[node name="AvatarBox" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ijn1k")
+
+[node name="Avatar" type="TextureRect" parent="AvatarBox"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_aj2x8")
+stretch_mode = 5
+
+[node name="HealthBar" type="TextureProgressBar" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.0
+value = 0.77
+texture_over = SubResource("AtlasTexture_g23as")
+texture_progress = SubResource("AtlasTexture_jccqy")
+texture_progress_offset = Vector2(1, 1)
+
+[node name="EasedHealthBar" type="TextureProgressBar" parent="HealthBar"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.0
+value = 1.0
+texture_progress = SubResource("AtlasTexture_cu07w")
+texture_progress_offset = Vector2(1, 1)

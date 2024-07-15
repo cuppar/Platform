@@ -5,6 +5,13 @@ namespace Platform.classes;
 [GlobalClass]
 public partial class Stats : Node
 {
+    #region Delegates
+
+    [Signal]
+    public delegate void HealthChangedEventHandler();
+
+    #endregion
+
     private int _health;
     [Export] public int MaxHealth = 3;
 
@@ -15,10 +22,10 @@ public partial class Stats : Node
         set
         {
             value = Mathf.Clamp(value, 0, MaxHealth);
-            // ReSharper disable once RedundantCheckBeforeAssignment
             if (value == _health)
                 return;
             _health = value;
+            EmitSignal(SignalName.HealthChanged);
         }
     }
 

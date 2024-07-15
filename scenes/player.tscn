@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://umje0lkfrv5"]
+[gd_scene load_steps=26 format=3 uid="uid://umje0lkfrv5"]
 
 [ext_resource type="Script" path="res://scenes/Player.cs" id="1_q2an3"]
 [ext_resource type="Texture2D" uid="uid://csq55fwfdwfom" path="res://assets/generic_char_v0.2/png/blue/char_blue_1.png" id="2_0g6hc"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://classes/HurtBox.cs" id="3_lxj0r"]
 [ext_resource type="Script" path="res://classes/HitBox.cs" id="4_qfywi"]
 [ext_resource type="Script" path="res://classes/Stats.cs" id="6_y15j2"]
+[ext_resource type="PackedScene" uid="uid://mvsmalsxdm4m" path="res://ui/status_panel.tscn" id="7_luonw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wdgjs"]
 size = Vector2(12, 28)
@@ -1926,3 +1927,12 @@ one_shot = true
 [node name="InvincibleTimer" type="Timer" parent="Timers"]
 wait_time = 2.0
 one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StatusPanel" parent="CanvasLayer" node_paths=PackedStringArray("Stats") instance=ExtResource("7_luonw")]
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 93.0
+offset_bottom = 31.0
+Stats = NodePath("../../Stats")
