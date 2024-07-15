@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Godot;
 using Platform.classes;
@@ -11,6 +12,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public enum State
     {
+        NonGroundIdle,
         Idle,
         Running,
         Jump,
@@ -20,7 +22,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         WallJump,
         Attack1,
         Attack2,
-        Attack3
+        Attack3,
+        Hurt,
+        Dying
     }
 
     #endregion
@@ -36,6 +40,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     private bool _isComboRequested;
 
     private bool _isFirstTick;
+
+    private Damage? _pendingDamage;
     [Export] public bool CanCombo;
 
     private Player()
@@ -52,58 +58,76 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public float FloorAcceleration { get; set; }
     [Export] public float AirAcceleration { get; set; }
 
+    [Export] public float KnockBackAmount { get; set; } = 512;
+
     #region IStateMachine<State> Members
 
     public void TransitionState(State fromState, State toState)
     {
-        // GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
-            _coyoteTimer.Stop();
+            CoyoteTimer.Stop();
 
         switch (toState)
         {
-            case State.Idle:
-                _animationPlayer.Play("idle");
+            case State.Idle or State.NonGroundIdle:
+                AnimationPlayer.Play("idle");
                 break;
             case State.Running:
-                _animationPlayer.Play("running");
+                AnimationPlayer.Play("running");
                 break;
             case State.Jump:
-                _animationPlayer.Play("jump");
+                AnimationPlayer.Play("jump");
                 Velocity = Velocity with { Y = JumpVelocity };
-                _coyoteTimer.Stop();
-                _jumpRequestTimer.Stop();
+                CoyoteTimer.Stop();
+                JumpRequestTimer.Stop();
                 break;
             case State.Fall:
-                _animationPlayer.Play("fall");
+                AnimationPlayer.Play("fall");
                 if (_groundStates.Contains(fromState))
-                    _coyoteTimer.Start();
+                    CoyoteTimer.Start();
                 break;
             case State.Landing:
-                _animationPlayer.Play("landing");
+                AnimationPlayer.Play("landing");
                 break;
             case State.WallSliding:
-                _animationPlayer.Play("wall_sliding");
+                AnimationPlayer.Play("wall_sliding");
                 break;
             case State.WallJump:
-                _animationPlayer.Play("jump");
+                AnimationPlayer.Play("jump");
                 Velocity = WallJumpVelocity with { X = WallJumpVelocity.X * GetWallNormal().X };
-                _jumpRequestTimer.Stop();
+                JumpRequestTimer.Stop();
                 break;
             case State.Attack1:
-                _animationPlayer.Play("attack_1");
+                AnimationPlayer.Play("attack_1");
                 _isComboRequested = false;
                 break;
             case State.Attack2:
-                _animationPlayer.Play("attack_2");
+                AnimationPlayer.Play("attack_2");
                 _isComboRequested = false;
                 break;
             case State.Attack3:
-                _animationPlayer.Play("attack_3");
+                AnimationPlayer.Play("attack_3");
                 _isComboRequested = false;
                 break;
+            case State.Hurt:
+                AnimationPlayer.Play("hurt");
+                Debug.Assert(_pendingDamage != null);
 
+                Stats.Health -= _pendingDamage.Amount;
+                var hitDirection = _pendingDamage.Source.GlobalPosition.DirectionTo(GlobalPosition);
+
+                Velocity = hitDirection * KnockBackAmount;
+
+                _pendingDamage = null;
+                InvincibleTimer.Start();
+
+                break;
+            case State.Dying:
+                InvincibleTimer.Stop();
+                AnimationPlayer.Play("die");
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(toState), toState, null);
         }
@@ -114,8 +138,18 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     public State GetNextState(State currentState, out bool keepCurrent)
     {
         keepCurrent = false;
-        var canJump = IsOnFloor() || _coyoteTimer.TimeLeft > 0;
-        var shouldJump = canJump && _jumpRequestTimer.TimeLeft > 0;
+        if (Stats.Health <= 0)
+        {
+            if (currentState == State.Dying)
+                keepCurrent = true;
+            return State.Dying;
+        }
+
+        if (_pendingDamage != null)
+            return State.Hurt;
+
+        var canJump = IsOnFloor() || CoyoteTimer.TimeLeft > 0;
+        var shouldJump = canJump && JumpRequestTimer.TimeLeft > 0;
 
         if (shouldJump)
             return State.Jump;
@@ -135,6 +169,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 if (!isStill)
                     return State.Running;
                 break;
+            case State.NonGroundIdle:
+                return IsOnFloor() ? State.Idle : State.Fall;
             case State.Running:
                 if (Input.IsActionJustPressed("attack"))
                     return State.Attack1;
@@ -154,7 +190,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Landing:
                 if (!isStill)
                     return State.Running;
-                if (!_animationPlayer.IsPlaying())
+                if (!AnimationPlayer.IsPlaying())
                     return State.Idle;
                 break;
             case State.WallSliding:
@@ -162,7 +198,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                     return State.Idle;
                 if (!IsOnWall())
                     return State.Fall;
-                if (_jumpRequestTimer.TimeLeft > 0 && !_isFirstTick)
+                if (JumpRequestTimer.TimeLeft > 0 && !_isFirstTick)
                     return State.WallJump;
                 break;
             case State.WallJump:
@@ -172,16 +208,22 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                     return State.Fall;
                 break;
             case State.Attack1:
-                if (!_animationPlayer.IsPlaying())
+                if (!AnimationPlayer.IsPlaying())
                     return _isComboRequested ? State.Attack2 : State.Idle;
                 break;
             case State.Attack2:
-                if (!_animationPlayer.IsPlaying())
+                if (!AnimationPlayer.IsPlaying())
                     return _isComboRequested ? State.Attack3 : State.Idle;
                 break;
             case State.Attack3:
-                if (!_animationPlayer.IsPlaying())
+                if (!AnimationPlayer.IsPlaying())
                     return State.Idle;
+                break;
+            case State.Hurt:
+                if (!AnimationPlayer.IsPlaying())
+                    return IsOnFloor() ? State.Idle : State.NonGroundIdle;
+                break;
+            case State.Dying:
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -193,9 +235,21 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TickPhysics(State currentState, double delta)
     {
+        if (InvincibleTimer.TimeLeft > 0)
+            Graphics.Modulate = Graphics.Modulate with
+            {
+                A = (float)(Math.Sin(
+                    (InvincibleTimer.WaitTime - InvincibleTimer.TimeLeft) / InvincibleTimer.WaitTime
+                    * (2 * Math.PI)
+                    * 10 // 闪烁10次
+                ) * 0.5 + 0.5)
+            };
+        else
+            Graphics.Modulate = Graphics.Modulate with { A = 1 };
+
         switch (currentState)
         {
-            case State.Idle:
+            case State.Idle or State.NonGroundIdle:
                 Move(_gravity, delta);
                 break;
             case State.Running:
@@ -212,7 +266,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 break;
             case State.WallSliding:
                 Move(_gravity / 3, delta);
-                _graphics.Scale = _graphics.Scale with { X = GetWallNormal().X };
+                Graphics.Scale = Graphics.Scale with { X = GetWallNormal().X };
                 break;
             case State.WallJump:
                 if (_stateMachine.StateTime < 0.1)
@@ -220,7 +274,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 else
                     Move(_gravity, delta);
                 break;
-            case State.Attack1 or State.Attack2 or State.Attack3:
+            case State.Attack1 or State.Attack2 or State.Attack3 or State.Hurt or State.Dying:
                 Stand(_gravity, delta);
                 break;
             default:
@@ -234,7 +288,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     private bool CanWallSlide()
     {
-        return IsOnWall() && _handChecker.IsColliding() && _footChecker.IsColliding();
+        return IsOnWall() && HandChecker.IsColliding() && FootChecker.IsColliding();
     }
 
 
@@ -261,7 +315,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         };
 
         if (!Mathf.IsZeroApprox(direction))
-            _graphics.Scale = _graphics.Scale with
+            Graphics.Scale = Graphics.Scale with
             {
                 X = direction < 0 ? -1 : +1
             };
@@ -273,11 +327,11 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsActionPressed("jump"))
-            _jumpRequestTimer.Start();
+            JumpRequestTimer.Start();
 
         if (@event.IsActionReleased("jump"))
         {
-            _jumpRequestTimer.Stop();
+            JumpRequestTimer.Stop();
             if (Velocity.Y < JumpVelocity / 2)
                 Velocity = Velocity with { Y = JumpVelocity / 2 };
         }
@@ -286,17 +340,38 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             _isComboRequested = true;
     }
 
+    public override void _Ready()
+    {
+        HurtBox.Hurt += OnHurt;
+    }
+
+    private void OnHurt(HitBox hitBox)
+    {
+        if (InvincibleTimer.TimeLeft > 0)
+            return;
+
+        _pendingDamage = new Damage((Node2D)hitBox.Owner, 1);
+    }
+
+    private void Die()
+    {
+        GetTree().ReloadCurrentScene();
+    }
+
     #region Child
 
     [ExportGroup("ChildDontChange")] [Export]
-    private Node2D _graphics = null!;
+    public Node2D Graphics = null!;
 
-    [Export] private AnimationPlayer _animationPlayer = null!;
-    [Export] private Timer _coyoteTimer = null!;
-    [Export] private Timer _jumpRequestTimer = null!;
-    [Export] private RayCast2D _handChecker = null!;
-    [Export] private RayCast2D _footChecker = null!;
     private StateMachine<State> _stateMachine;
+    [Export] public AnimationPlayer AnimationPlayer = null!;
+    [Export] public Timer CoyoteTimer = null!;
+    [Export] public Timer JumpRequestTimer = null!;
+    [Export] public RayCast2D HandChecker = null!;
+    [Export] public RayCast2D FootChecker = null!;
+    [Export] public Stats Stats = null!;
+    [Export] public HurtBox HurtBox = null!;
+    [Export] public Timer InvincibleTimer = null!;
 
     #endregion
 }
