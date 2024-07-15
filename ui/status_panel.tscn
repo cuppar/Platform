@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://mvsmalsxdm4m"]
+[gd_scene load_steps=11 format=3 uid="uid://mvsmalsxdm4m"]
 
 [ext_resource type="Texture2D" uid="uid://dtyqp10ihd7cd" path="res://assets/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="1_30vyk"]
 [ext_resource type="Script" path="res://ui/StatusPanel.cs" id="1_jhpaa"]
@@ -28,9 +28,18 @@ region = Rect2(308, 118, 56, 4)
 atlas = ExtResource("1_30vyk")
 region = Rect2(308, 86, 56, 4)
 
-[node name="StatusPanel" type="HBoxContainer" node_paths=PackedStringArray("HealthBar")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_00i15"]
+atlas = ExtResource("1_30vyk")
+region = Rect2(307, 6, 58, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7sg8i"]
+atlas = ExtResource("1_30vyk")
+region = Rect2(308, 135, 56, 2)
+
+[node name="StatusPanel" type="HBoxContainer" node_paths=PackedStringArray("HealthBar", "EnergyBar")]
 script = ExtResource("1_jhpaa")
-HealthBar = NodePath("HealthBar")
+HealthBar = NodePath("V/HealthBar")
+EnergyBar = NodePath("V/EnergyBar")
 
 [node name="AvatarBox" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(26, 26)
@@ -42,7 +51,12 @@ layout_mode = 2
 texture = SubResource("AtlasTexture_aj2x8")
 stretch_mode = 5
 
-[node name="HealthBar" type="TextureProgressBar" parent="."]
+[node name="V" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="HealthBar" type="TextureProgressBar" parent="V"]
 layout_mode = 2
 size_flags_vertical = 4
 max_value = 1.0
@@ -52,7 +66,7 @@ texture_over = SubResource("AtlasTexture_g23as")
 texture_progress = SubResource("AtlasTexture_jccqy")
 texture_progress_offset = Vector2(1, 1)
 
-[node name="EasedHealthBar" type="TextureProgressBar" parent="HealthBar"]
+[node name="EasedHealthBar" type="TextureProgressBar" parent="V/HealthBar"]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 15
@@ -65,4 +79,13 @@ max_value = 1.0
 step = 0.0
 value = 1.0
 texture_progress = SubResource("AtlasTexture_cu07w")
+texture_progress_offset = Vector2(1, 1)
+
+[node name="EnergyBar" type="TextureProgressBar" parent="V"]
+layout_mode = 2
+max_value = 1.0
+step = 0.0
+value = 1.0
+texture_over = SubResource("AtlasTexture_00i15")
+texture_progress = SubResource("AtlasTexture_7sg8i")
 texture_progress_offset = Vector2(1, 1)

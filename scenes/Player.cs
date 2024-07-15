@@ -24,16 +24,23 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         Attack2,
         Attack3,
         Hurt,
-        Dying
+        Dying,
+        SlidingStart,
+        SlidingLoop,
+        SlidingEnd
     }
 
     #endregion
+
+    private const double SlideLoopDuration = 0.3;
 
     private readonly State[] _groundStates =
     {
         State.Idle, State.Running, State.Landing,
         State.Attack1, State.Attack2, State.Attack3
     };
+
+    private float _fallFromHeight;
 
     private float _gravity = (float)ProjectSettings.GetSetting("physics/2d/default_gravity");
 
@@ -43,6 +50,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     private Damage? _pendingDamage;
     [Export] public bool CanCombo;
+    [Export] public float SlidingEnergy = 4;
 
     private Player()
     {
@@ -57,8 +65,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public Vector2 WallJumpVelocity { get; set; } = new(500, -300);
     [Export] public float FloorAcceleration { get; set; }
     [Export] public float AirAcceleration { get; set; }
-
     [Export] public float KnockBackAmount { get; set; } = 512;
+    [Export] public float SlideSpeed { get; set; } = 300;
+    [Export] public float LandingHeight { get; set; } = 100;
 
     #region IStateMachine<State> Members
 
@@ -87,6 +96,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 AnimationPlayer.Play("fall");
                 if (_groundStates.Contains(fromState))
                     CoyoteTimer.Start();
+                _fallFromHeight = GlobalPosition.Y;
                 break;
             case State.Landing:
                 AnimationPlayer.Play("landing");
@@ -128,6 +138,18 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 InvincibleTimer.Stop();
                 AnimationPlayer.Play("die");
                 break;
+            case State.SlidingStart:
+                AnimationPlayer.Play("sliding_start");
+                SlideRequestTimer.Stop();
+                Stats.Energy -= SlidingEnergy;
+                break;
+            case State.SlidingLoop:
+                AnimationPlayer.Play("sliding_loop");
+                break;
+            case State.SlidingEnd:
+                AnimationPlayer.Play("sliding_end");
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(toState), toState, null);
         }
@@ -163,17 +185,21 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
         switch (currentState)
         {
+            case State.NonGroundIdle:
+                return IsOnFloor() ? State.Idle : State.Fall;
             case State.Idle:
                 if (Input.IsActionJustPressed("attack"))
                     return State.Attack1;
+                if (ShouldSlide())
+                    return State.SlidingStart;
                 if (!isStill)
                     return State.Running;
                 break;
-            case State.NonGroundIdle:
-                return IsOnFloor() ? State.Idle : State.Fall;
             case State.Running:
                 if (Input.IsActionJustPressed("attack"))
                     return State.Attack1;
+                if (ShouldSlide())
+                    return State.SlidingStart;
                 if (isStill)
                     return State.Idle;
                 break;
@@ -183,13 +209,15 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 break;
             case State.Fall:
                 if (IsOnFloor())
-                    return isStill ? State.Landing : State.Running;
+                {
+                    var height = GlobalPosition.Y - _fallFromHeight;
+                    return height >= LandingHeight ? State.Landing : State.Running;
+                }
+
                 if (CanWallSlide())
                     return State.WallSliding;
                 break;
             case State.Landing:
-                if (!isStill)
-                    return State.Running;
                 if (!AnimationPlayer.IsPlaying())
                     return State.Idle;
                 break;
@@ -224,6 +252,18 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                     return IsOnFloor() ? State.Idle : State.NonGroundIdle;
                 break;
             case State.Dying:
+                break;
+            case State.SlidingStart:
+                if (!AnimationPlayer.IsPlaying())
+                    return State.SlidingLoop;
+                break;
+            case State.SlidingLoop:
+                if (_stateMachine.StateTime > SlideLoopDuration || IsOnWall())
+                    return State.SlidingEnd;
+                break;
+            case State.SlidingEnd:
+                if (!AnimationPlayer.IsPlaying())
+                    return State.NonGroundIdle;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
@@ -274,9 +314,19 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 else
                     Move(_gravity, delta);
                 break;
-            case State.Attack1 or State.Attack2 or State.Attack3 or State.Hurt or State.Dying:
+            case State.Attack1 or State.Attack2 or State.Attack3:
                 Stand(_gravity, delta);
                 break;
+            case State.Hurt or State.Dying:
+                Stand(_gravity, delta);
+                break;
+            case State.SlidingStart or State.SlidingLoop:
+                Slide(_gravity, delta);
+                break;
+            case State.SlidingEnd:
+                Stand(_gravity, delta);
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
         }
@@ -285,6 +335,26 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     }
 
     #endregion
+
+    private void Slide(float gravity, double delta)
+    {
+        var direction = Graphics.Scale.X > 0 ? +1f : -1;
+        Velocity = Velocity with
+        {
+            X = direction * SlideSpeed,
+            Y = Velocity.Y + gravity * (float)delta
+        };
+        MoveAndSlide();
+    }
+
+    private bool ShouldSlide()
+    {
+        if (SlideRequestTimer.IsStopped())
+            return false;
+        if (Stats.Energy < SlidingEnergy)
+            return false;
+        return !FootChecker.IsColliding();
+    }
 
     private bool CanWallSlide()
     {
@@ -338,6 +408,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
         if (@event.IsActionPressed("attack") && CanCombo)
             _isComboRequested = true;
+
+        if (@event.IsActionPressed("slide"))
+            SlideRequestTimer.Start();
     }
 
     public override void _Ready()
@@ -372,6 +445,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public Stats Stats = null!;
     [Export] public HurtBox HurtBox = null!;
     [Export] public Timer InvincibleTimer = null!;
+    [Export] public Timer SlideRequestTimer = null!;
 
     #endregion
 }

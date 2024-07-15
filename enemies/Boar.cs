@@ -33,7 +33,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        // GD.Print($"[{nameof(Boar)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
         switch (toState)
         {
             case State.Idle:
