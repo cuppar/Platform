@@ -1,4 +1,3 @@
-using System.Linq;
 using Godot;
 
 namespace Platform.classes;
@@ -6,14 +5,12 @@ namespace Platform.classes;
 [GlobalClass]
 public partial class Interactable : Area2D
 {
+    #region Delegates
+
     [Signal]
     public delegate void InteractedEventHandler();
 
-    public void Interact()
-    {
-        GD.Print($"[Interact] {Name}");
-        EmitSignal(SignalName.Interacted);
-    }
+    #endregion
 
     public Interactable()
     {
@@ -23,6 +20,12 @@ public partial class Interactable : Area2D
 
         BodyEntered += OnBodyEntered;
         BodyExited += OnBodyExited;
+    }
+
+    public virtual void Interact()
+    {
+        GD.Print($"[Interact] {Name}");
+        EmitSignal(SignalName.Interacted);
     }
 
 

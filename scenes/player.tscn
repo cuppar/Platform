@@ -1,11 +1,10 @@
-[gd_scene load_steps=35 format=3 uid="uid://umje0lkfrv5"]
+[gd_scene load_steps=34 format=3 uid="uid://umje0lkfrv5"]
 
 [ext_resource type="Script" path="res://scenes/Player.cs" id="1_q2an3"]
 [ext_resource type="Texture2D" uid="uid://csq55fwfdwfom" path="res://assets/generic_char_v0.2/png/blue/char_blue_1.png" id="2_0g6hc"]
 [ext_resource type="Texture2D" uid="uid://g60sqh6hpxk" path="res://assets/generic_char_v0.2/png/blue/char_blue_2.png" id="2_ev7vt"]
 [ext_resource type="Script" path="res://classes/HurtBox.cs" id="3_lxj0r"]
 [ext_resource type="Script" path="res://classes/HitBox.cs" id="4_qfywi"]
-[ext_resource type="Script" path="res://classes/Stats.cs" id="6_y15j2"]
 [ext_resource type="PackedScene" uid="uid://mvsmalsxdm4m" path="res://ui/status_panel.tscn" id="7_luonw"]
 [ext_resource type="Texture2D" uid="uid://dahkdqndj5lb8" path="res://assets/gdb-keyboard-2.png" id="8_n7wco"]
 
@@ -2322,7 +2321,7 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "Stats", "HurtBox", "InvincibleTimer", "SlideRequestTimer", "InteractIcon")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "SlideRequestTimer", "InteractIcon")]
 collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
@@ -2333,7 +2332,6 @@ CoyoteTimer = NodePath("Timers/CoyoteTimer")
 JumpRequestTimer = NodePath("Timers/JumpRequestTimer")
 HandChecker = NodePath("Graphics/HandChecker")
 FootChecker = NodePath("Graphics/FootChecker")
-Stats = NodePath("Stats")
 HurtBox = NodePath("Graphics/HurtBox")
 InvincibleTimer = NodePath("Timers/InvincibleTimer")
 SlideRequestTimer = NodePath("Timers/SlideRequestTimer")
@@ -2400,9 +2398,6 @@ libraries = {
 "": SubResource("AnimationLibrary_ene0o")
 }
 
-[node name="Stats" type="Node" parent="."]
-script = ExtResource("6_y15j2")
-
 [node name="Timers" type="Node" parent="."]
 
 [node name="CoyoteTimer" type="Timer" parent="Timers"]
@@ -2423,12 +2418,11 @@ one_shot = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="StatusPanel" parent="CanvasLayer" node_paths=PackedStringArray("Stats") instance=ExtResource("7_luonw")]
+[node name="StatusPanel" parent="CanvasLayer" instance=ExtResource("7_luonw")]
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 93.0
 offset_bottom = 31.0
-Stats = NodePath("../../Stats")
 
 [node name="InteractIcon" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -45)

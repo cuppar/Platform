@@ -5,8 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://umje0lkfrv5" path="res://scenes/player.tscn" id="2_pm1hy"]
 [ext_resource type="Texture2D" uid="uid://bnpdw1kjsvwvo" path="res://assets/Legacy-Fantasy - High Forest 2.3/Background/Background.png" id="4_jmxbc"]
 [ext_resource type="Texture2D" uid="uid://dmy6lt8s2q2hd" path="res://assets/Legacy-Fantasy - High Forest 2.3/Trees/Background.png" id="5_0e62q"]
+[ext_resource type="PackedScene" uid="uid://cgipoeqknulmu" path="res://objects/mine_gate.tscn" id="5_6t82n"]
+[ext_resource type="Script" path="res://classes/EntryPoint.cs" id="6_amsx6"]
 [ext_resource type="PackedScene" uid="uid://cjv8hvmweiqil" path="res://enemies/boar.tscn" id="6_cevtd"]
-[ext_resource type="Script" path="res://classes/Interactable.cs" id="7_68r62"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yvceu"]
 texture = ExtResource("1_k2cqa")
@@ -465,18 +466,16 @@ terrain_set_0/terrain_1/name = "Leaf"
 terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_yvceu")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gfijh"]
-size = Vector2(15, 20)
-
-[node name="World" type="Node2D" node_paths=PackedStringArray("_camera", "_tileMap")]
+[node name="World" type="Node2D" node_paths=PackedStringArray("Camera", "TileMap", "Player")]
 script = ExtResource("1_bu0o6")
-_camera = NodePath("Player/Camera2D")
-_tileMap = NodePath("TileMap")
+Camera = NodePath("Player/Camera2D")
+TileMap = NodePath("TileMap")
+Player = NodePath("Player")
 metadata/_edit_vertical_guides_ = [240.0]
 
 [node name="Decorations" type="Node2D" parent="."]
-metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="Background" type="ParallaxBackground" parent="Decorations"]
 
@@ -727,7 +726,7 @@ region_enabled = true
 region_rect = Rect2(210, 293, 124, 86)
 
 [node name="Tree-assets5" type="Sprite2D" parent="Decorations/Foreground/Bushes"]
-position = Vector2(871, 197)
+position = Vector2(846, 191)
 texture = ExtResource("1_k2cqa")
 region_enabled = true
 region_rect = Rect2(210, 293, 124, 86)
@@ -748,6 +747,28 @@ layer_1/tile_data = PackedInt32Array(917561, 262144, 4, 852025, 262144, 2, 78648
 layer_2/name = "Foreground"
 layer_2/tile_data = PackedInt32Array(655362, 524288, 2, 655363, 589824, 3, 655373, 524288, 3, 655375, 655360, 2, 655376, 589824, 2, 786451, 589824, 2, 786453, 524288, 3, 786454, 393216, 3, 786458, 655360, 2, 589855, 589824, 2, 589856, 655360, 2, 589858, 458752, 3, 327718, 393216, 3, 327719, 524288, 2, 589870, 393216, 3, 589873, 393216, 3, 589874, 589824, 3, 589878, 655360, 2, -786430, 524288, 2, -786427, 458752, 3, -786425, 655360, 2, -786423, 458752, 3, -786419, 655360, 2, -786417, 655360, 2, -786413, 524288, 3, -786403, 524288, 2)
 
+[node name="TopGate" parent="TileMap" instance=ExtResource("5_6t82n")]
+position = Vector2(35, -174)
+scale = Vector2(-1, 1)
+EntryPointName = "BottomEntryPoint"
+Path = "res://scenes/world.tscn"
+
+[node name="TopEntryPoint" type="Marker2D" parent="TileMap/TopGate"]
+position = Vector2(-93, -2)
+rotation = 3.14159
+scale = Vector2(1, -1)
+script = ExtResource("6_amsx6")
+
+[node name="BottomGate" parent="TileMap" instance=ExtResource("5_6t82n")]
+position = Vector2(892, 163)
+EntryPointName = "TopEntryPoint"
+Path = "res://scenes/world.tscn"
+
+[node name="BottomEntryPoint" type="Marker2D" parent="TileMap/BottomGate"]
+position = Vector2(-84, -3)
+script = ExtResource("6_amsx6")
+Direction = -1
+
 [node name="Boar" parent="." instance=ExtResource("6_cevtd")]
 position = Vector2(206, 167)
 
@@ -763,21 +784,3 @@ drag_vertical_enabled = true
 editor_draw_limits = true
 editor_draw_drag_margin = true
 metadata/_edit_lock_ = true
-
-[node name="右边蔬菜" type="Area2D" parent="."]
-position = Vector2(363, 198)
-script = ExtResource("7_68r62")
-metadata/_edit_group_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="右边蔬菜"]
-position = Vector2(-2.5, 0)
-shape = SubResource("RectangleShape2D_gfijh")
-
-[node name="左边蔬菜" type="Area2D" parent="."]
-position = Vector2(347, 198)
-script = ExtResource("7_68r62")
-metadata/_edit_group_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="左边蔬菜"]
-position = Vector2(-2.5, 0)
-shape = SubResource("RectangleShape2D_gfijh")

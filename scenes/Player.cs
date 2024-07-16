@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Godot;
 using Platform.classes;
+using Platform.globals;
 
 namespace Platform;
 
@@ -49,9 +50,15 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     private bool _isFirstTick;
 
     private Damage? _pendingDamage;
+
     [Export] public bool CanCombo;
-    [Export] public float SlidingEnergy = 4;
+
     public Interactable[] InteractWith = Array.Empty<Interactable>();
+
+    [Export] public float SlidingEnergy = 4;
+
+    public Stats Stats = null!;
+
 
     private Player()
     {
@@ -182,8 +189,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             return State.Fall;
 
 
-        var direction = Input.GetAxis("move_left", "move_right");
-        var isStill = Mathf.IsZeroApprox(direction) && Mathf.IsZeroApprox(Velocity.X);
+        var movement = Input.GetAxis("move_left", "move_right");
+        var isStill = Mathf.IsZeroApprox(movement) && Mathf.IsZeroApprox(Velocity.X);
 
         switch (currentState)
         {
@@ -310,13 +317,14 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 break;
             case State.WallSliding:
                 Move(_gravity / 3, delta);
-                Graphics.Scale = Graphics.Scale with { X = GetWallNormal().X };
+                Direction = GetWallNormal().X > 0 ? DirectionEnum.Right : DirectionEnum.Left;
                 break;
             case State.WallJump:
                 if (_stateMachine.StateTime < 0.1)
                     Stand(_isFirstTick ? 0 : _gravity, delta);
                 else
                     Move(_gravity, delta);
+
                 break;
             case State.Attack1 or State.Attack2 or State.Attack3:
                 Stand(_gravity, delta);
@@ -342,10 +350,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     private void Slide(float gravity, double delta)
     {
-        var direction = Graphics.Scale.X > 0 ? +1f : -1;
         Velocity = Velocity with
         {
-            X = direction * SlideSpeed,
+            X = (float)Direction * SlideSpeed,
             Y = Velocity.Y + gravity * (float)delta
         };
         MoveAndSlide();
@@ -380,19 +387,16 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     private void Move(float gravity, double delta)
     {
-        var direction = Input.GetAxis("move_left", "move_right");
+        var movement = Input.GetAxis("move_left", "move_right");
         var acceleration = IsOnFloor() ? FloorAcceleration : AirAcceleration;
         Velocity = Velocity with
         {
             Y = Velocity.Y + gravity * (float)delta,
-            X = Mathf.MoveToward(Velocity.X, direction * RunSpeed, acceleration * (float)delta)
+            X = Mathf.MoveToward(Velocity.X, movement * RunSpeed, acceleration * (float)delta)
         };
 
-        if (!Mathf.IsZeroApprox(direction))
-            Graphics.Scale = Graphics.Scale with
-            {
-                X = direction < 0 ? -1 : +1
-            };
+        if (!Mathf.IsZeroApprox(movement))
+            Direction = movement > 0 ? DirectionEnum.Right : DirectionEnum.Left;
 
         MoveAndSlide();
     }
@@ -422,6 +426,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public override void _Ready()
     {
+        Stats = AutoloadManager.Game.PlayerStats;
         HurtBox.Hurt += OnHurt;
     }
 
@@ -450,7 +455,39 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     private void Die()
     {
         GetTree().ReloadCurrentScene();
+        Stats.Reset();
     }
+
+    #region Direction
+
+    public enum DirectionEnum
+    {
+        Left = -1,
+        Right = +1
+    }
+
+    private DirectionEnum _direction = DirectionEnum.Right;
+
+    [Export]
+    public DirectionEnum Direction
+    {
+        get => _direction;
+        set => SetDirection(value);
+    }
+
+    private async void SetDirection(DirectionEnum value)
+    {
+        if (_direction == value)
+            return;
+
+        if (!IsNodeReady())
+            await ToSignal(this, Node.SignalName.Ready);
+
+        _direction = value;
+        Graphics.Scale = Graphics.Scale with { X = value == DirectionEnum.Right ? +1 : -1 };
+    }
+
+    #endregion
 
     #region Child
 
@@ -463,11 +500,10 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public Timer JumpRequestTimer = null!;
     [Export] public RayCast2D HandChecker = null!;
     [Export] public RayCast2D FootChecker = null!;
-    [Export] public Stats Stats = null!;
     [Export] public HurtBox HurtBox = null!;
     [Export] public Timer InvincibleTimer = null!;
-    [Export] public Timer SlideRequestTimer = null!;
     [Export] public AnimatedSprite2D InteractIcon = null!;
+    [Export] public Timer SlideRequestTimer = null!;
 
     #endregion
 }

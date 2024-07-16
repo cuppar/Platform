@@ -12,7 +12,7 @@ public partial class Stats : Node
     public delegate void EnergyChangedEventHandler();
 
     [Signal]
-    public delegate void HealthChangedEventHandler();
+    public delegate void HealthChangedEventHandler(bool skipAnimation);
 
     #endregion
 
@@ -33,7 +33,7 @@ public partial class Stats : Node
             if (value == _health)
                 return;
             _health = value;
-            EmitSignal(SignalName.HealthChanged);
+            EmitSignal(SignalName.HealthChanged, false);
         }
     }
 
@@ -53,6 +53,11 @@ public partial class Stats : Node
 
 
     public override void _Ready()
+    {
+        Reset();
+    }
+
+    public void Reset()
     {
         Health = MaxHealth;
         Energy = MaxEnergy;
