@@ -10,7 +10,7 @@ public partial class StateMachine<TState> : Node
 
     public double StateTime;
 
-    private TState CurrentState
+    public TState CurrentState
     {
         get => _currentState;
         set

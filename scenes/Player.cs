@@ -51,6 +51,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     private Damage? _pendingDamage;
     [Export] public bool CanCombo;
     [Export] public float SlidingEnergy = 4;
+    public Interactable[] InteractWith = Array.Empty<Interactable>();
 
     private Player()
     {
@@ -73,7 +74,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        // GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
             CoyoteTimer.Stop();
@@ -137,6 +138,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Dying:
                 InvincibleTimer.Stop();
                 AnimationPlayer.Play("die");
+                Array.Clear(InteractWith);
                 break;
             case State.SlidingStart:
                 AnimationPlayer.Play("sliding_start");
@@ -275,6 +277,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TickPhysics(State currentState, double delta)
     {
+        InteractIcon.Visible = InteractWith.Length != 0;
+
         if (InvincibleTimer.TimeLeft > 0)
             Graphics.Modulate = Graphics.Modulate with
             {
@@ -411,11 +415,28 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
         if (@event.IsActionPressed("slide"))
             SlideRequestTimer.Start();
+
+        if (@event.IsActionPressed("interact") && InteractWith.Length != 0)
+            InteractWith.Last().Interact();
     }
 
     public override void _Ready()
     {
         HurtBox.Hurt += OnHurt;
+    }
+
+    public void RegisterInteractable(Interactable interactable)
+    {
+        if (_stateMachine.CurrentState == State.Dying)
+            return;
+        if (InteractWith.Contains(interactable))
+            return;
+        InteractWith = InteractWith.Append(interactable).ToArray();
+    }
+
+    public void UnregisterInteractable(Interactable interactable)
+    {
+        InteractWith = InteractWith.Where(v => v != interactable).ToArray();
     }
 
     private void OnHurt(HitBox hitBox)
@@ -446,6 +467,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public HurtBox HurtBox = null!;
     [Export] public Timer InvincibleTimer = null!;
     [Export] public Timer SlideRequestTimer = null!;
+    [Export] public AnimatedSprite2D InteractIcon = null!;
 
     #endregion
 }

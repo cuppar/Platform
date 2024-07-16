@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://umje0lkfrv5"]
+[gd_scene load_steps=35 format=3 uid="uid://umje0lkfrv5"]
 
 [ext_resource type="Script" path="res://scenes/Player.cs" id="1_q2an3"]
 [ext_resource type="Texture2D" uid="uid://csq55fwfdwfom" path="res://assets/generic_char_v0.2/png/blue/char_blue_1.png" id="2_0g6hc"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://classes/HitBox.cs" id="4_qfywi"]
 [ext_resource type="Script" path="res://classes/Stats.cs" id="6_y15j2"]
 [ext_resource type="PackedScene" uid="uid://mvsmalsxdm4m" path="res://ui/status_panel.tscn" id="7_luonw"]
+[ext_resource type="Texture2D" uid="uid://dahkdqndj5lb8" path="res://assets/gdb-keyboard-2.png" id="8_n7wco"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wdgjs"]
 size = Vector2(12, 28)
@@ -2285,7 +2286,43 @@ _data = {
 "wall_sliding": SubResource("Animation_711b7")
 }
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "Stats", "HurtBox", "InvincibleTimer", "SlideRequestTimer")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_verek"]
+atlas = ExtResource("8_n7wco")
+region = Rect2(96, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ck61n"]
+atlas = ExtResource("8_n7wco")
+region = Rect2(96, 160, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xlmwd"]
+atlas = ExtResource("8_n7wco")
+region = Rect2(96, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b150d"]
+atlas = ExtResource("8_n7wco")
+region = Rect2(96, 384, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hpiwg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_verek")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ck61n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xlmwd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b150d")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "Stats", "HurtBox", "InvincibleTimer", "SlideRequestTimer", "InteractIcon")]
 collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
@@ -2300,6 +2337,7 @@ Stats = NodePath("Stats")
 HurtBox = NodePath("Graphics/HurtBox")
 InvincibleTimer = NodePath("Timers/InvincibleTimer")
 SlideRequestTimer = NodePath("Timers/SlideRequestTimer")
+InteractIcon = NodePath("InteractIcon")
 metadata/_edit_group_ = true
 
 [node name="Graphics" type="Node2D" parent="."]
@@ -2391,3 +2429,9 @@ offset_top = 5.0
 offset_right = 93.0
 offset_bottom = 31.0
 Stats = NodePath("../../Stats")
+
+[node name="InteractIcon" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -45)
+sprite_frames = SubResource("SpriteFrames_hpiwg")
+autoplay = "default"
+frame_progress = 0.388863
