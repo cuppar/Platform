@@ -41,7 +41,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         State.Attack1, State.Attack2, State.Attack3
     };
 
-    private float _fallFromHeight;
+    public float FallFromHeight { get; set; }
 
     private float _gravity = (float)ProjectSettings.GetSetting("physics/2d/default_gravity");
 
@@ -81,7 +81,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TransitionState(State fromState, State toState)
     {
-        // GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
+        GD.Print($"[{nameof(Player)}][{Engine.GetPhysicsFrames()}] {fromState} => {toState}");
 
         if (!_groundStates.Contains(fromState) && _groundStates.Contains(toState))
             CoyoteTimer.Stop();
@@ -104,7 +104,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 AnimationPlayer.Play("fall");
                 if (_groundStates.Contains(fromState))
                     CoyoteTimer.Start();
-                _fallFromHeight = GlobalPosition.Y;
+                FallFromHeight = GlobalPosition.Y;
                 break;
             case State.Landing:
                 AnimationPlayer.Play("landing");
@@ -219,7 +219,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Fall:
                 if (IsOnFloor())
                 {
-                    var height = GlobalPosition.Y - _fallFromHeight;
+                    var height = GlobalPosition.Y - FallFromHeight;
                     return height >= LandingHeight ? State.Landing : State.Running;
                 }
 
@@ -428,6 +428,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     {
         Stats = AutoloadManager.Game.PlayerStats;
         HurtBox.Hurt += OnHurt;
+        // Stand(_gravity, 0.01);
     }
 
     public void RegisterInteractable(Interactable interactable)

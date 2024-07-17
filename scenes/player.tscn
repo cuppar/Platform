@@ -2321,11 +2321,12 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "SlideRequestTimer", "InteractIcon")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "InteractIcon", "SlideRequestTimer")]
 collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
 WallJumpVelocity = Vector2(450, -300)
+LandingHeight = 20.0
 Graphics = NodePath("Graphics")
 AnimationPlayer = NodePath("AnimationPlayer")
 CoyoteTimer = NodePath("Timers/CoyoteTimer")
@@ -2334,8 +2335,8 @@ HandChecker = NodePath("Graphics/HandChecker")
 FootChecker = NodePath("Graphics/FootChecker")
 HurtBox = NodePath("Graphics/HurtBox")
 InvincibleTimer = NodePath("Timers/InvincibleTimer")
-SlideRequestTimer = NodePath("Timers/SlideRequestTimer")
 InteractIcon = NodePath("InteractIcon")
+SlideRequestTimer = NodePath("Timers/SlideRequestTimer")
 metadata/_edit_group_ = true
 
 [node name="Graphics" type="Node2D" parent="."]

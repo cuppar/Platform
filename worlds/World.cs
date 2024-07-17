@@ -1,6 +1,6 @@
 using Godot;
 
-namespace Platform;
+namespace Platform.worlds;
 
 public partial class World : Node2D
 {
@@ -19,6 +19,7 @@ public partial class World : Node2D
     public void UpdatePlayer(Vector2 position, Player.DirectionEnum entryPointDirection)
     {
         Player.GlobalPosition = position;
+        Player.FallFromHeight = position.Y;
         Player.Direction = entryPointDirection;
         Camera.ResetSmoothing();
         Camera.ForceUpdateScroll();

@@ -3,9 +3,19 @@
 [ext_resource type="Script" path="res://globals/Game.cs" id="1_fruok"]
 [ext_resource type="Script" path="res://classes/Stats.cs" id="2_ne3yb"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("PlayerStats")]
+[node name="Game" type="CanvasLayer" node_paths=PackedStringArray("PlayerStats", "ColorRect")]
+layer = 99
 script = ExtResource("1_fruok")
 PlayerStats = NodePath("PlayerStats")
+ColorRect = NodePath("ColorRect")
 
 [node name="PlayerStats" type="Node" parent="."]
 script = ExtResource("2_ne3yb")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
