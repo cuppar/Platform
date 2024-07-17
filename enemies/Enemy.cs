@@ -15,6 +15,11 @@ public partial class Enemy : CharacterBody2D
         Acceleration = MaxSpeed / 0.1f;
     }
 
+    public override void _Ready()
+    {
+        AddToGroup("enemies");
+    }
+
     protected void Move(float speed, double delta)
     {
         Velocity = Velocity with

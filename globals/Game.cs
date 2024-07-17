@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using Platform.classes;
 using Platform.worlds;
@@ -6,6 +7,8 @@ namespace Platform.globals;
 
 public partial class Game : CanvasLayer
 {
+    private readonly Dictionary<string, World.Status> _worldStatusMap = new();
+
     public override void _Ready()
     {
         ColorRect.Color = ColorRect.Color with { A = 0 };
@@ -21,9 +24,17 @@ public partial class Game : CanvasLayer
         tween.TweenProperty(ColorRect, "color:a", 1, 0.2);
         await ToSignal(tween, Tween.SignalName.Finished);
 
+        var world = (World)tree.CurrentScene;
+        var oldWorldName = world.SceneFilePath.GetBaseName().GetFile();
+        _worldStatusMap[oldWorldName] = world.CurrentStatus;
 
         tree.ChangeSceneToFile(scenePath);
         await ToSignal(tree, SceneTree.SignalName.TreeChanged);
+
+        world = (World)tree.CurrentScene;
+        var newWorldName = world.SceneFilePath.GetFile().GetBaseName();
+        if (_worldStatusMap.TryGetValue(newWorldName, out var newWorldStatus))
+            world.CurrentStatus = newWorldStatus;
 
         foreach (var node in tree.GetNodesInGroup("entry_points"))
         {

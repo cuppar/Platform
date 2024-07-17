@@ -1,9 +1,37 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace Platform.worlds;
 
 public partial class World : Node2D
 {
+    private Status _currentStatus = new();
+
+    public Status CurrentStatus
+    {
+        get
+        {
+            _currentStatus.AliveEnemies.Clear();
+            foreach (var enemy in GetTree().GetNodesInGroup("enemies"))
+            {
+                var path = GetPathTo(enemy);
+                _currentStatus.AliveEnemies.Add(path);
+            }
+
+            return _currentStatus;
+        }
+        set
+        {
+            _currentStatus = value;
+            foreach (var enemy in GetTree().GetNodesInGroup("enemies"))
+            {
+                var path = GetPathTo(enemy);
+                if (!_currentStatus.AliveEnemies.Contains(path))
+                    enemy.QueueFree();
+            }
+        }
+    }
+
     public override void _Ready()
     {
         var used = TileMap.GetUsedRect().Grow(-1);
@@ -24,6 +52,15 @@ public partial class World : Node2D
         Camera.ResetSmoothing();
         Camera.ForceUpdateScroll();
     }
+
+    #region Nested type: Status
+
+    public record Status
+    {
+        public readonly List<string> AliveEnemies = new();
+    }
+
+    #endregion
 
 
     #region Child

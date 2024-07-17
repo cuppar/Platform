@@ -158,6 +158,7 @@ public partial class Boar : Enemy, IStateMachine<Boar.State>
 
     public override void _Ready()
     {
+        base._Ready();
         HurtBox.Hurt += OnHurt;
     }
 

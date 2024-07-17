@@ -23,7 +23,7 @@ public partial class HitBox : Area2D
 
     private void OnHurtBoxEntered(HurtBox hurtBox)
     {
-        GD.Print($"[Hit] {Owner.Name} => {hurtBox.Owner.Name}");
+        // GD.Print($"[Hit] {Owner.Name} => {hurtBox.Owner.Name}");
         EmitSignal(SignalName.Hit, hurtBox);
         hurtBox.EmitSignal(HurtBox.SignalName.Hurt, this);
     }
