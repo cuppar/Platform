@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://b0n7mnv6xwi6e"]
+[gd_scene load_steps=8 format=3 uid="uid://b0n7mnv6xwi6e"]
 
 [ext_resource type="Script" path="res://worlds/World.cs" id="1_ofhxa"]
 [ext_resource type="TileSet" uid="uid://dphns1ptijoa1" path="res://assets/tiles.tres" id="2_d2lfq"]
 [ext_resource type="PackedScene" uid="uid://cgipoeqknulmu" path="res://objects/mine_gate.tscn" id="5_4fji5"]
+[ext_resource type="PackedScene" uid="uid://2gy25jiqltqp" path="res://objects/save_stone.tscn" id="5_7toj2"]
 [ext_resource type="Script" path="res://classes/EntryPoint.cs" id="6_hc42l"]
 [ext_resource type="PackedScene" uid="uid://cjv8hvmweiqil" path="res://enemies/boar.tscn" id="7_hehdd"]
 [ext_resource type="PackedScene" uid="uid://umje0lkfrv5" path="res://scenes/player.tscn" id="8_1jro2"]
@@ -13,6 +14,9 @@ Camera = NodePath("Player/Camera2D")
 TileMap = NodePath("TileMap")
 Player = NodePath("Player")
 metadata/_edit_vertical_guides_ = [240.0]
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.341584, 0.341584, 0.341584, 1)
 
 [node name="Decorations" type="Node2D" parent="."]
 metadata/_edit_group_ = true
@@ -44,6 +48,9 @@ Path = "res://worlds/forest.tscn"
 [node name="EntryPoint" type="Marker2D" parent="TileMap/MineGate"]
 position = Vector2(-85, -1)
 script = ExtResource("6_hc42l")
+
+[node name="SaveStone" parent="." instance=ExtResource("5_7toj2")]
+position = Vector2(141, 337)
 
 [node name="Boar" parent="." instance=ExtResource("7_hehdd")]
 position = Vector2(590, 272)

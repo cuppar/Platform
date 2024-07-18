@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3v1v47yfck3g"]
+[gd_scene load_steps=11 format=3 uid="uid://b3v1v47yfck3g"]
 
 [ext_resource type="Script" path="res://worlds/World.cs" id="1_bu0o6"]
 [ext_resource type="Texture2D" uid="uid://d0a2cnt1s8xyc" path="res://assets/Legacy-Fantasy - High Forest 2.3/Assets/Tree-Assets.png" id="1_k2cqa"]
@@ -9,6 +9,7 @@
 [ext_resource type="TileSet" uid="uid://dphns1ptijoa1" path="res://assets/tiles.tres" id="5_x3w3r"]
 [ext_resource type="Script" path="res://classes/EntryPoint.cs" id="6_amsx6"]
 [ext_resource type="PackedScene" uid="uid://cjv8hvmweiqil" path="res://enemies/boar.tscn" id="6_cevtd"]
+[ext_resource type="PackedScene" uid="uid://2gy25jiqltqp" path="res://objects/save_stone.tscn" id="10_iuo6g"]
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("Camera", "TileMap", "Player")]
 script = ExtResource("1_bu0o6")
@@ -311,6 +312,9 @@ Path = "res://worlds/cave.tscn"
 position = Vector2(-84, -3)
 script = ExtResource("6_amsx6")
 Direction = -1
+
+[node name="SaveStone" parent="." instance=ExtResource("10_iuo6g")]
+position = Vector2(694, 160)
 
 [node name="Boar" parent="." instance=ExtResource("6_cevtd")]
 position = Vector2(377, 209)
