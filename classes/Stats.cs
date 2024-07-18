@@ -73,6 +73,7 @@ public partial class Stats : Node
         return new Data
         {
             MaxHealth = MaxHealth,
+            Energy = Energy,
             MaxEnergy = MaxEnergy,
             Health = Health
         };
@@ -83,6 +84,7 @@ public partial class Stats : Node
         MaxHealth = data.MaxHealth;
         MaxEnergy = data.MaxEnergy;
         Health = data.Health;
+        Energy = data.Energy;
     }
 
     #region Nested type: Data
@@ -92,6 +94,7 @@ public partial class Stats : Node
         public int MaxHealth { get; init; }
         public float MaxEnergy { get; init; }
         public int Health { get; init; }
+        public float Energy { get; init; }
     }
 
     #endregion

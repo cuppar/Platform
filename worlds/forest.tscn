@@ -15,7 +15,6 @@ script = ExtResource("1_bu0o6")
 Camera = NodePath("Player/Camera2D")
 TileMap = NodePath("TileMap")
 Player = NodePath("Player")
-metadata/_edit_vertical_guides_ = [240.0]
 
 [node name="Decorations" type="Node2D" parent="."]
 metadata/_edit_group_ = true

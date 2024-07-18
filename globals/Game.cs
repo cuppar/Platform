@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -71,13 +72,13 @@ public partial class Game : CanvasLayer
         GD.Print("\n>>> WorldMap: " + string.Join(", ", gameData.WorldStatusMap.Select(p => $"{p.Key} => {p.Value}")));
 
         _worldStatusMap = gameData.WorldStatusMap;
-        PlayerStats.Load(gameData.Player.StatsData);
 
         ChangeScene(gameData.CurrentScenePath, new ChangeSceneParams
         {
             Direction = gameData.Player.Direction,
             GlobalPosition = gameData.Player.GlobalPosition,
-            IsSaveOldWorld = false
+            IsSaveOldWorld = false,
+            Init = () => { PlayerStats.Load(gameData.Player.StatsData); }
         });
     }
 
@@ -119,7 +120,10 @@ public partial class Game : CanvasLayer
 
         // 切换场景
         tree.ChangeSceneToFile(scenePath);
+        // 加载新场景时的初始化
+        @params.Init?.Invoke();
         await ToSignal(tree, SceneTree.SignalName.TreeChanged);
+
 
         // 恢复新世界状态
         world = (World)tree.CurrentScene;
@@ -156,12 +160,14 @@ public partial class Game : CanvasLayer
         public Vector2? GlobalPosition;
         public Player.DirectionEnum? Direction;
         public bool IsSaveOldWorld = true;
+        public Action? Init;
 
         public ChangeSceneParams()
         {
             EntryPointName = null;
             GlobalPosition = null;
             Direction = null;
+            Init = null;
         }
     }
 
