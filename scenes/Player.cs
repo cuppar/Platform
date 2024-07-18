@@ -41,8 +41,6 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         State.Attack1, State.Attack2, State.Attack3
     };
 
-    public float FallFromHeight { get; set; }
-
     private float _gravity = (float)ProjectSettings.GetSetting("physics/2d/default_gravity");
 
     private bool _isComboRequested;
@@ -53,11 +51,11 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     [Export] public bool CanCombo;
 
-    public Interactable[] InteractWith = Array.Empty<Interactable>();
+    private Interactable[] _interactWith = Array.Empty<Interactable>();
 
     [Export] public float SlidingEnergy = 4;
 
-    public Stats Stats = null!;
+    private Stats _stats = null!;
 
 
     private Player()
@@ -67,6 +65,8 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
         _stateMachine = StateMachine<State>.Create(this);
     }
+
+    public float FallFromHeight { get; set; }
 
     [Export] public float RunSpeed { get; set; } = 200;
     [Export] public float JumpVelocity { get; set; } = -300;
@@ -133,7 +133,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 AnimationPlayer.Play("hurt");
                 Debug.Assert(_pendingDamage != null);
 
-                Stats.Health -= _pendingDamage.Amount;
+                _stats.Health -= _pendingDamage.Amount;
                 var hitDirection = _pendingDamage.Source.GlobalPosition.DirectionTo(GlobalPosition);
 
                 Velocity = hitDirection * KnockBackAmount;
@@ -145,12 +145,12 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
             case State.Dying:
                 InvincibleTimer.Stop();
                 AnimationPlayer.Play("die");
-                Array.Clear(InteractWith);
+                Array.Clear(_interactWith);
                 break;
             case State.SlidingStart:
                 AnimationPlayer.Play("sliding_start");
                 SlideRequestTimer.Stop();
-                Stats.Energy -= SlidingEnergy;
+                _stats.Energy -= SlidingEnergy;
                 break;
             case State.SlidingLoop:
                 AnimationPlayer.Play("sliding_loop");
@@ -169,7 +169,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     public State GetNextState(State currentState, out bool keepCurrent)
     {
         keepCurrent = false;
-        if (Stats.Health <= 0)
+        if (_stats.Health <= 0)
         {
             if (currentState == State.Dying)
                 keepCurrent = true;
@@ -284,7 +284,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     public void TickPhysics(State currentState, double delta)
     {
-        InteractIcon.Visible = InteractWith.Length != 0;
+        InteractIcon.Visible = _interactWith.Length != 0;
 
         if (InvincibleTimer.TimeLeft > 0)
             Graphics.Modulate = Graphics.Modulate with
@@ -362,7 +362,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     {
         if (SlideRequestTimer.IsStopped())
             return false;
-        if (Stats.Energy < SlidingEnergy)
+        if (_stats.Energy < SlidingEnergy)
             return false;
         return !FootChecker.IsColliding();
     }
@@ -420,29 +420,29 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
         if (@event.IsActionPressed("slide"))
             SlideRequestTimer.Start();
 
-        if (@event.IsActionPressed("interact") && InteractWith.Length != 0)
-            InteractWith.Last().Interact();
+        if (@event.IsActionPressed("interact") && _interactWith.Length != 0)
+            _interactWith.Last().Interact();
     }
 
     public override void _Ready()
     {
-        Stats = AutoloadManager.Game.PlayerStats;
+        _stats = AutoloadManager.Game.PlayerStats;
         HurtBox.Hurt += OnHurt;
-        // Stand(_gravity, 0.01);
+        Stand(_gravity, 0.01);
     }
 
     public void RegisterInteractable(Interactable interactable)
     {
         if (_stateMachine.CurrentState == State.Dying)
             return;
-        if (InteractWith.Contains(interactable))
+        if (_interactWith.Contains(interactable))
             return;
-        InteractWith = InteractWith.Append(interactable).ToArray();
+        _interactWith = _interactWith.Append(interactable).ToArray();
     }
 
     public void UnregisterInteractable(Interactable interactable)
     {
-        InteractWith = InteractWith.Where(v => v != interactable).ToArray();
+        _interactWith = _interactWith.Where(v => v != interactable).ToArray();
     }
 
     private void OnHurt(HitBox hitBox)
@@ -456,7 +456,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     private void Die()
     {
         GetTree().ReloadCurrentScene();
-        Stats.Reset();
+        _stats.Reset();
     }
 
     #region Direction

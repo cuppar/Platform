@@ -2326,7 +2326,6 @@ collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
 WallJumpVelocity = Vector2(450, -300)
-LandingHeight = 20.0
 Graphics = NodePath("Graphics")
 AnimationPlayer = NodePath("AnimationPlayer")
 CoyoteTimer = NodePath("Timers/CoyoteTimer")

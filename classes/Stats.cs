@@ -67,4 +67,32 @@ public partial class Stats : Node
     {
         Energy += EnergyRegen * (float)delta;
     }
+
+    public Data Save()
+    {
+        return new Data
+        {
+            MaxHealth = MaxHealth,
+            MaxEnergy = MaxEnergy,
+            Health = Health
+        };
+    }
+
+    public void Load(Data data)
+    {
+        MaxHealth = data.MaxHealth;
+        MaxEnergy = data.MaxEnergy;
+        Health = data.Health;
+    }
+
+    #region Nested type: Data
+
+    public record Data
+    {
+        public int MaxHealth { get; init; }
+        public float MaxEnergy { get; init; }
+        public int Health { get; init; }
+    }
+
+    #endregion
 }

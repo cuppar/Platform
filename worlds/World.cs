@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace Platform.worlds;
@@ -57,7 +58,12 @@ public partial class World : Node2D
 
     public record Status
     {
-        public readonly List<string> AliveEnemies = new();
+        public List<string> AliveEnemies = new();
+
+        public override string ToString()
+        {
+            return $"Status(AliveEnemies=[{string.Join(", ", AliveEnemies.Select(x => x))}])";
+        }
     }
 
     #endregion

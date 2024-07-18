@@ -12,6 +12,9 @@ public partial class Teleporter : Interactable
     public override void Interact()
     {
         base.Interact();
-        AutoloadManager.Game.ChangeScene(Path, EntryPointName);
+        AutoloadManager.Game.ChangeScene(Path, new Game.ChangeSceneParams
+        {
+            EntryPointName = EntryPointName,
+        });
     }
 }
