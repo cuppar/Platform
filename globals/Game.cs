@@ -98,13 +98,14 @@ public partial class Game : CanvasLayer
     public async void ChangeScene(string scenePath, ChangeSceneParams @params = default)
     {
         var tree = GetTree();
+        var duration = @params.Duration;
 
         // 暂停游戏
         tree.Paused = true;
         // 淡出当前场景
         var tween = CreateTween();
         tween.SetPauseMode(Tween.TweenPauseMode.Process);
-        tween.TweenProperty(ColorRect, "color:a", 1, 0.2);
+        tween.TweenProperty(ColorRect, "color:a", 1, duration);
         await ToSignal(tween, Tween.SignalName.Finished);
 
 
@@ -146,7 +147,8 @@ public partial class Game : CanvasLayer
 
         // 淡入
         tween = CreateTween();
-        tween.TweenProperty(ColorRect, "color:a", 0, 0.2);
+        tween.SetPauseMode(Tween.TweenPauseMode.Process);
+        tween.TweenProperty(ColorRect, "color:a", 0, duration);
         // 恢复游戏执行
         tree.Paused = false;
     }
@@ -156,6 +158,7 @@ public partial class Game : CanvasLayer
         ChangeScene(ScenePaths.Forest, new ChangeSceneParams
         {
             IsSaveOldWorld = false,
+            Duration = 1,
             Init = () =>
             {
                 _worldStatusMap = new Dictionary<string, World.Status>();
@@ -166,7 +169,10 @@ public partial class Game : CanvasLayer
 
     public void BackToTitle()
     {
-        ChangeScene(ScenePaths.TitleScreen);
+        ChangeScene(ScenePaths.TitleScreen, new ChangeSceneParams
+        {
+            Duration = 1
+        });
     }
 
     public bool HasSaveFile()
@@ -178,18 +184,15 @@ public partial class Game : CanvasLayer
 
     public struct ChangeSceneParams
     {
-        public string? EntryPointName;
-        public Vector2? GlobalPosition;
-        public Player.DirectionEnum? Direction;
+        public string? EntryPointName = null;
+        public Vector2? GlobalPosition = null;
+        public Player.DirectionEnum? Direction = Player.DirectionEnum.Right;
         public bool IsSaveOldWorld = true;
-        public Action? Init;
+        public Action? Init = null;
+        public float Duration = 0.2f;
 
         public ChangeSceneParams()
         {
-            EntryPointName = null;
-            GlobalPosition = null;
-            Direction = null;
-            Init = null;
         }
     }
 

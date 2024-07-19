@@ -5,4 +5,5 @@ public static class ScenePaths
     public const string Forest = "res://worlds/forest.tscn";
     public const string Cave = "res://worlds/cave.tscn";
     public const string TitleScreen = "res://ui/title_screen.tscn";
+    public const string GameEndScreen = "res://ui/game_end_screen.tscn";
 }

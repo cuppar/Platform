@@ -5,10 +5,16 @@ namespace Platform.enemies;
 
 public partial class Enemy : CharacterBody2D
 {
+    #region Delegates
+
+    [Signal]
+    public delegate void DiedEventHandler();
+
+    #endregion
+
     private float _gravity = (float)ProjectSettings.GetSetting("physics/2d/default_gravity");
     [Export] public float Acceleration;
     [Export] public float MaxSpeed = 230;
-
 
     public Enemy()
     {
@@ -32,6 +38,7 @@ public partial class Enemy : CharacterBody2D
 
     private void Die()
     {
+        EmitSignal(SignalName.Died);
         QueueFree();
     }
 

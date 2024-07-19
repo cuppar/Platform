@@ -392,7 +392,7 @@ layer_2/tile_data = PackedInt32Array(655362, 524288, 2, 655363, 589824, 3, 65537
 position = Vector2(91, 148)
 sprite_frames = SubResource("SpriteFrames_51bfv")
 autoplay = "default"
-frame_progress = 0.0161971
+frame_progress = 0.0787902
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -415,10 +415,10 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -26.0
-offset_right = -28.0
-offset_bottom = 75.0
+offset_left = 284.0
+offset_top = 82.0
+offset_right = 356.0
+offset_bottom = 183.0
 grow_horizontal = 0
 grow_vertical = 2
 

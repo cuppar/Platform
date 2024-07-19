@@ -4,6 +4,7 @@ using System.Linq;
 using Godot;
 using Platform.classes;
 using Platform.globals;
+using Platform.ui;
 
 namespace Platform;
 
@@ -455,8 +456,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     private void Die()
     {
-        GetTree().ReloadCurrentScene();
-        _stats.Reset();
+        GameOverScreen.ShowGameOver();
     }
 
     #region Direction
@@ -505,6 +505,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public Timer InvincibleTimer = null!;
     [Export] public AnimatedSprite2D InteractIcon = null!;
     [Export] public Timer SlideRequestTimer = null!;
+    [Export] public GameOverScreen GameOverScreen = null!;
 
     #endregion
 }
