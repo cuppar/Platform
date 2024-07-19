@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Platform.globals;
 
 namespace Platform.worlds;
 
@@ -54,6 +55,13 @@ public partial class World : Node2D
         Camera.ForceUpdateScroll();
     }
 
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        base._UnhandledInput(@event);
+        if (@event.IsActionPressed("ui_cancel"))
+            AutoloadManager.Game.BackToTitle();
+    }
+
     #region Nested type: Status
 
     public record Status
@@ -67,7 +75,6 @@ public partial class World : Node2D
     }
 
     #endregion
-
 
     #region Child
 

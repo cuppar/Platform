@@ -14,7 +14,7 @@ public partial class Teleporter : Interactable
         base.Interact();
         AutoloadManager.Game.ChangeScene(Path, new Game.ChangeSceneParams
         {
-            EntryPointName = EntryPointName,
+            EntryPointName = EntryPointName
         });
     }
 }

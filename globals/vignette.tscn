@@ -4,8 +4,8 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l2fg1"]
 shader = ExtResource("1_28tr6")
-shader_parameter/vignette_intensity = 1.39
-shader_parameter/vignette_opacity = 0.275
+shader_parameter/vignette_intensity = 0.5
+shader_parameter/vignette_opacity = 0.09
 shader_parameter/vignette_rgb = Color(0, 0, 0, 1)
 
 [node name="Vignette" type="CanvasLayer"]
@@ -18,3 +18,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2

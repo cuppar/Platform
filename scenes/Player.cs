@@ -43,19 +43,19 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
     private float _gravity = (float)ProjectSettings.GetSetting("physics/2d/default_gravity");
 
+    private Interactable[] _interactWith = Array.Empty<Interactable>();
+
     private bool _isComboRequested;
 
     private bool _isFirstTick;
 
     private Damage? _pendingDamage;
 
+    private Stats _stats = null!;
+
     [Export] public bool CanCombo;
 
-    private Interactable[] _interactWith = Array.Empty<Interactable>();
-
     [Export] public float SlidingEnergy = 4;
-
-    private Stats _stats = null!;
 
 
     private Player()
