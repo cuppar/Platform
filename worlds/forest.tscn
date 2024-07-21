@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3v1v47yfck3g"]
+[gd_scene load_steps=12 format=3 uid="uid://b3v1v47yfck3g"]
 
 [ext_resource type="Script" path="res://worlds/World.cs" id="1_bu0o6"]
 [ext_resource type="Texture2D" uid="uid://d0a2cnt1s8xyc" path="res://assets/Legacy-Fantasy - High Forest 2.3/Assets/Tree-Assets.png" id="1_k2cqa"]
+[ext_resource type="AudioStream" uid="uid://b7lewybu37w8e" path="res://assets/bgm/21 11 forest LOOP.mp3" id="2_j6ofr"]
 [ext_resource type="PackedScene" uid="uid://umje0lkfrv5" path="res://scenes/player.tscn" id="2_pm1hy"]
 [ext_resource type="Texture2D" uid="uid://bnpdw1kjsvwvo" path="res://assets/Legacy-Fantasy - High Forest 2.3/Background/Background.png" id="4_jmxbc"]
 [ext_resource type="Texture2D" uid="uid://dmy6lt8s2q2hd" path="res://assets/Legacy-Fantasy - High Forest 2.3/Trees/Background.png" id="5_0e62q"]
@@ -13,6 +14,7 @@
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("Camera", "TileMap", "Player")]
 script = ExtResource("1_bu0o6")
+BGM = ExtResource("2_j6ofr")
 Camera = NodePath("Player/Camera2D")
 TileMap = NodePath("TileMap")
 Player = NodePath("Player")

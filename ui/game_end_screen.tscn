@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfb1t015xj5ko"]
+[gd_scene load_steps=3 format=3 uid="uid://bfb1t015xj5ko"]
 
 [ext_resource type="Script" path="res://ui/GameEndScreen.cs" id="1_cspeu"]
+[ext_resource type="AudioStream" uid="uid://d2ct058qob0ll" path="res://assets/bgm/29 15 game over LOOP.mp3" id="2_61elb"]
 
 [node name="GameEndScreen" type="Control" node_paths=PackedStringArray("Label")]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cspeu")
+BGM = ExtResource("2_61elb")
 Label = NodePath("Label")
 
 [node name="ColorRect" type="ColorRect" parent="."]

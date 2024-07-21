@@ -5,6 +5,8 @@ namespace Platform.ui;
 
 public partial class TitleScreen : Control
 {
+    [Export] public AudioStream? BGM { get; set; }
+
     public override void _Ready()
     {
         base._Ready();
@@ -16,6 +18,9 @@ public partial class TitleScreen : Control
         }
 
         LoadGameButton.Disabled = !AutoloadManager.Game.HasSaveFile();
+        AutoloadManager.SoundManager.SetupUISounds(this);
+        if (BGM != null)
+            AutoloadManager.SoundManager.PlayBGM(BGM);
     }
 
     private void OnNewGame()

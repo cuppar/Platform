@@ -100,6 +100,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 Velocity = Velocity with { Y = JumpVelocity };
                 CoyoteTimer.Stop();
                 JumpRequestTimer.Stop();
+                AutoloadManager.SoundManager.PlaySFX("Jump");
                 break;
             case State.Fall:
                 AnimationPlayer.Play("fall");
@@ -120,6 +121,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 break;
             case State.Attack1:
                 AnimationPlayer.Play("attack_1");
+                AutoloadManager.SoundManager.PlaySFX("Attack");
                 _isComboRequested = false;
                 break;
             case State.Attack2:

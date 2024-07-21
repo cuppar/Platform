@@ -23,6 +23,8 @@ public partial class GameEndScreen : Control
 
     #endregion
 
+    [Export] public AudioStream? BGM { get; set; }
+
     private void ShowLine(int lineIndex)
     {
         _currentLineIndex = lineIndex;
@@ -43,6 +45,8 @@ public partial class GameEndScreen : Control
     {
         base._Ready();
         ShowLine(0);
+        if (BGM != null)
+            AutoloadManager.SoundManager.PlayBGM(BGM);
     }
 
     public override void _Input(InputEvent @event)

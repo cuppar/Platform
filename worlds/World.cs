@@ -8,6 +8,7 @@ namespace Platform.worlds;
 public partial class World : Node2D
 {
     private Status _currentStatus = new();
+    [Export] public AudioStream? BGM { get; set; }
 
     public Status CurrentStatus
     {
@@ -43,6 +44,8 @@ public partial class World : Node2D
         Camera.LimitLeft = used.Position.X * tileSize.X;
         Camera.LimitRight = used.End.X * tileSize.X;
         Camera.ResetSmoothing();
+        if (BGM != null)
+            AutoloadManager.SoundManager.PlayBGM(BGM);
     }
 
 

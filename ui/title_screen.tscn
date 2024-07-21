@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://d01iw4y0s48lf"]
+[gd_scene load_steps=19 format=3 uid="uid://d01iw4y0s48lf"]
 
 [ext_resource type="Theme" uid="uid://crbfnok31ayro" path="res://ui/main_theme.tres" id="1_7vhnr"]
 [ext_resource type="Script" path="res://ui/TitleScreen.cs" id="2_u00t1"]
 [ext_resource type="Texture2D" uid="uid://bnpdw1kjsvwvo" path="res://assets/Legacy-Fantasy - High Forest 2.3/Background/Background.png" id="3_bko4s"]
+[ext_resource type="AudioStream" uid="uid://b47gvoosex5rq" path="res://assets/bgm/02 1 titles LOOP.mp3" id="3_hbg4l"]
 [ext_resource type="Texture2D" uid="uid://dmy6lt8s2q2hd" path="res://assets/Legacy-Fantasy - High Forest 2.3/Trees/Background.png" id="4_i277m"]
 [ext_resource type="Texture2D" uid="uid://d0a2cnt1s8xyc" path="res://assets/Legacy-Fantasy - High Forest 2.3/Assets/Tree-Assets.png" id="5_r3v6a"]
 [ext_resource type="TileSet" uid="uid://dphns1ptijoa1" path="res://assets/tiles.tres" id="6_dumno"]
@@ -58,6 +59,21 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="Animation" id="Animation_usdxd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("V:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(284, 82)]
+}
+
 [sub_resource type="Animation" id="Animation_2ifs3"]
 resource_name = "enter"
 length = 0.5
@@ -72,21 +88,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
 "values": [Vector2(384, 82), Vector2(284, 82)]
-}
-
-[sub_resource type="Animation" id="Animation_usdxd"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("V:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(284, 82)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mx2qf"]
@@ -106,6 +107,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_7vhnr")
 script = ExtResource("2_u00t1")
+BGM = ExtResource("3_hbg4l")
 NewGameButton = NodePath("V/NewGame")
 LoadGameButton = NodePath("V/LoadGame")
 ButtonContainer = NodePath("V")
