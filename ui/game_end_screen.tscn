@@ -11,8 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cspeu")
-BGM = ExtResource("2_61elb")
 Label = NodePath("Label")
+BGM = ExtResource("2_61elb")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

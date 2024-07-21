@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://crbfnok31ayro"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://crbfnok31ayro"]
 
 [ext_resource type="Texture2D" uid="uid://dtyqp10ihd7cd" path="res://assets/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="1_s15wr"]
 
@@ -16,6 +16,46 @@ texture_margin_right = 3.0
 texture_margin_bottom = 3.0
 region_rect = Rect2(94, 14, 20, 20)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_jj31f"]
+atlas = ExtResource("1_s15wr")
+region = Rect2(3, 130, 11, 11)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ax7id"]
+atlas = ExtResource("1_s15wr")
+region = Rect2(19, 130, 11, 11)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_louap"]
+texture = ExtResource("1_s15wr")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+expand_margin_bottom = 1.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(95, 63, 18, 18)
+modulate_color = Color(1, 1, 1, 0.619608)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3jd55"]
+texture = ExtResource("1_s15wr")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+expand_margin_bottom = 1.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(95, 63, 18, 18)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aqydd"]
+texture = ExtResource("1_s15wr")
+texture_margin_left = 2.0
+texture_margin_top = 3.0
+texture_margin_right = 2.0
+texture_margin_bottom = 3.0
+expand_margin_bottom = 1.0
+region_rect = Rect2(95, 207, 18, 18)
+
 [resource]
 Button/colors/font_outline_color = Color(0, 0, 0, 0.686275)
 Button/colors/font_pressed_color = Color(1, 1, 1, 0.533333)
@@ -25,3 +65,8 @@ Button/styles/focus = SubResource("StyleBoxTexture_1sh47")
 Button/styles/hover = SubResource("StyleBoxEmpty_6210c")
 Button/styles/normal = SubResource("StyleBoxEmpty_6210c")
 Button/styles/pressed = SubResource("StyleBoxEmpty_6210c")
+HSlider/icons/grabber = SubResource("AtlasTexture_jj31f")
+HSlider/icons/grabber_highlight = SubResource("AtlasTexture_ax7id")
+HSlider/styles/grabber_area = SubResource("StyleBoxTexture_louap")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxTexture_3jd55")
+HSlider/styles/slider = SubResource("StyleBoxTexture_aqydd")

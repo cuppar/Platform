@@ -36,7 +36,7 @@ public partial class GameOverScreen : Control
         if (!@event.IsPressed() || @event.IsEcho()) return;
 
         if (AutoloadManager.Game.HasSaveFile())
-            AutoloadManager.Game.Load();
+            AutoloadManager.Game.LoadGame();
         else
             AutoloadManager.Game.BackToTitle();
     }

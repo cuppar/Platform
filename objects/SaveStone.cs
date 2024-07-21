@@ -17,6 +17,6 @@ public partial class SaveStone : Interactable
     {
         base.Interact();
         AnimationPlayer.Play("activated");
-        AutoloadManager.Game.Save();
+        AutoloadManager.Game.SaveGame();
     }
 }

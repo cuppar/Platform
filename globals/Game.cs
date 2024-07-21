@@ -12,6 +12,8 @@ namespace Platform.globals;
 public partial class Game : CanvasLayer
 {
     private const string SavePath = "user://data.sav";
+    private const string ConfigPath = "user://config.ini";
+    private const string AudioConfigSection = "audio";
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
@@ -23,7 +25,35 @@ public partial class Game : CanvasLayer
 
     private Dictionary<string, World.Status> _worldStatusMap = new();
 
-    public void Save()
+    public static void SaveConfig()
+    {
+        var config = new ConfigFile();
+        config.SetValue(AudioConfigSection,
+            SoundManager.Bus.Master.ToString(),
+            SoundManager.GetVolume(SoundManager.Bus.Master));
+        config.SetValue(AudioConfigSection,
+            SoundManager.Bus.SFX.ToString(),
+            SoundManager.GetVolume(SoundManager.Bus.SFX));
+        config.SetValue(AudioConfigSection,
+            SoundManager.Bus.BGM.ToString(),
+            SoundManager.GetVolume(SoundManager.Bus.BGM));
+        config.Save(ConfigPath);
+    }
+
+    public static void LoadConfig()
+    {
+        var config = new ConfigFile();
+        config.Load(ConfigPath);
+
+        SoundManager.SetVolume(SoundManager.Bus.Master,
+            (float)config.GetValue(AudioConfigSection, SoundManager.Bus.Master.ToString(), 0.5));
+        SoundManager.SetVolume(SoundManager.Bus.SFX,
+            (float)config.GetValue(AudioConfigSection, SoundManager.Bus.SFX.ToString(), 0.5));
+        SoundManager.SetVolume(SoundManager.Bus.BGM,
+            (float)config.GetValue(AudioConfigSection, SoundManager.Bus.BGM.ToString(), 0.5));
+    }
+
+    public void SaveGame()
     {
         var tree = GetTree();
         var world = (World)tree.CurrentScene;
@@ -57,7 +87,7 @@ public partial class Game : CanvasLayer
         file.StoreString(json);
     }
 
-    public void Load()
+    public void LoadGame()
     {
         using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
         if (file == null)
@@ -92,6 +122,7 @@ public partial class Game : CanvasLayer
     {
         ColorRect.Color = ColorRect.Color with { A = 0 };
         _defaultPlayerStatsData = PlayerStats.Save();
+        LoadConfig();
     }
 
 

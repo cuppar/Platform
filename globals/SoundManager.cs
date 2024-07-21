@@ -4,6 +4,19 @@ namespace Platform.globals;
 
 public partial class SoundManager : Node
 {
+    #region Bus enum
+
+    public enum Bus
+    {
+        Master,
+        SFX,
+        BGM
+    }
+
+    #endregion
+
+    private float _volume;
+
     public void PlaySFX(string sfxName)
     {
         var player = SFX.GetNode<AudioStreamPlayer>(sfxName);
@@ -29,6 +42,19 @@ public partial class SoundManager : Node
         BGMPlayer.Stream = audioStream;
         BGMPlayer.Play();
     }
+
+    public static float GetVolume(Bus bus)
+    {
+        var db = AudioServer.GetBusVolumeDb((int)bus);
+        return Mathf.DbToLinear(db);
+    }
+
+    public static void SetVolume(Bus bus, float volume)
+    {
+        var db = Mathf.LinearToDb(volume);
+        AudioServer.SetBusVolumeDb((int)bus, db);
+    }
+
 
     #region Child
 

@@ -30,7 +30,7 @@ public partial class TitleScreen : Control
 
     private void OnLoadGame()
     {
-        AutoloadManager.Game.Load();
+        AutoloadManager.Game.LoadGame();
     }
 
     private void OnExitGame()
