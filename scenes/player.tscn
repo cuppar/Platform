@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://umje0lkfrv5"]
+[gd_scene load_steps=36 format=3 uid="uid://umje0lkfrv5"]
 
 [ext_resource type="Script" path="res://scenes/Player.cs" id="1_q2an3"]
 [ext_resource type="Texture2D" uid="uid://csq55fwfdwfom" path="res://assets/generic_char_v0.2/png/blue/char_blue_1.png" id="2_0g6hc"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://classes/HitBox.cs" id="4_qfywi"]
 [ext_resource type="PackedScene" uid="uid://mvsmalsxdm4m" path="res://ui/status_panel.tscn" id="7_luonw"]
 [ext_resource type="PackedScene" uid="uid://dvlujera5cx56" path="res://ui/game_over_screen.tscn" id="7_oasfh"]
+[ext_resource type="PackedScene" uid="uid://cs84tk5ay6a2f" path="res://ui/pause_screen.tscn" id="8_05yqm"]
 [ext_resource type="Texture2D" uid="uid://dahkdqndj5lb8" path="res://assets/gdb-keyboard-2.png" id="8_n7wco"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wdgjs"]
@@ -2322,7 +2323,7 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "InteractIcon", "SlideRequestTimer", "GameOverScreen")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "InteractIcon", "SlideRequestTimer", "GameOverScreen", "PauseScreen")]
 collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
@@ -2338,6 +2339,7 @@ InvincibleTimer = NodePath("Timers/InvincibleTimer")
 InteractIcon = NodePath("InteractIcon")
 SlideRequestTimer = NodePath("Timers/SlideRequestTimer")
 GameOverScreen = NodePath("CanvasLayer/GameOverScreen")
+PauseScreen = NodePath("CanvasLayer/PauseScreen")
 metadata/_edit_group_ = true
 
 [node name="Graphics" type="Node2D" parent="."]
@@ -2428,6 +2430,8 @@ offset_right = 93.0
 offset_bottom = 31.0
 
 [node name="GameOverScreen" parent="CanvasLayer" instance=ExtResource("7_oasfh")]
+
+[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource("8_05yqm")]
 
 [node name="InteractIcon" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -45)

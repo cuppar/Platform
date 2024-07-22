@@ -425,6 +425,9 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
 
         if (@event.IsActionPressed("interact") && _interactWith.Length != 0)
             _interactWith.Last().Interact();
+
+        if (@event.IsActionPressed("pause"))
+            PauseScreen.ShowPauseScreen();
     }
 
     public override void _Ready()
@@ -508,6 +511,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public AnimatedSprite2D InteractIcon = null!;
     [Export] public Timer SlideRequestTimer = null!;
     [Export] public GameOverScreen GameOverScreen = null!;
+    [Export] public PauseScreen PauseScreen = null!;
 
     #endregion
 }

@@ -29,6 +29,14 @@ public partial class SoundManager : Node
         {
             button.Pressed += () => PlaySFX("UIPress");
             button.FocusEntered += () => PlaySFX("UIFocus");
+            button.MouseEntered += button.GrabFocus;
+        }
+
+        if (node is Slider slider)
+        {
+            slider.ValueChanged += _ => PlaySFX("UIPress");
+            slider.FocusEntered += () => PlaySFX("UIFocus");
+            slider.MouseEntered += slider.GrabFocus;
         }
 
         foreach (var child in node.GetChildren())

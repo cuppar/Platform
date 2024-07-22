@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://crbfnok31ayro"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://crbfnok31ayro"]
 
 [ext_resource type="Texture2D" uid="uid://dtyqp10ihd7cd" path="res://assets/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="1_s15wr"]
 
@@ -56,6 +56,20 @@ texture_margin_bottom = 3.0
 expand_margin_bottom = 1.0
 region_rect = Rect2(95, 207, 18, 18)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r7o3n"]
+content_margin_left = 16.0
+content_margin_top = 4.0
+content_margin_right = 16.0
+content_margin_bottom = 4.0
+texture = ExtResource("1_s15wr")
+texture_margin_left = 3.0
+texture_margin_top = 3.0
+texture_margin_right = 3.0
+texture_margin_bottom = 3.0
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+region_rect = Rect2(64, 272, 16, 16)
+
 [resource]
 Button/colors/font_outline_color = Color(0, 0, 0, 0.686275)
 Button/colors/font_pressed_color = Color(1, 1, 1, 0.533333)
@@ -70,3 +84,5 @@ HSlider/icons/grabber_highlight = SubResource("AtlasTexture_ax7id")
 HSlider/styles/grabber_area = SubResource("StyleBoxTexture_louap")
 HSlider/styles/grabber_area_highlight = SubResource("StyleBoxTexture_3jd55")
 HSlider/styles/slider = SubResource("StyleBoxTexture_aqydd")
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.576471)
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_r7o3n")

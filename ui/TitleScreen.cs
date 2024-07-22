@@ -11,12 +11,6 @@ public partial class TitleScreen : Control
     {
         base._Ready();
         NewGameButton.GrabFocus();
-        foreach (var node in ButtonContainer.GetChildren())
-        {
-            var button = (Button)node;
-            button.MouseEntered += button.GrabFocus;
-        }
-
         LoadGameButton.Disabled = !AutoloadManager.Game.HasSaveFile();
         AutoloadManager.SoundManager.SetupUISounds(this);
         if (BGM != null)
