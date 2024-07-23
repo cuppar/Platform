@@ -133,6 +133,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
                 _isComboRequested = false;
                 break;
             case State.Hurt:
+                AutoloadManager.Game.ShakeCamera(4);
                 AnimationPlayer.Play("hurt");
                 Debug.Assert(_pendingDamage != null);
 
@@ -434,7 +435,17 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     {
         _stats = AutoloadManager.Game.PlayerStats;
         HurtBox.Hurt += OnHurt;
+        HitBox.Hit += OnHit;
         Stand(_gravity, 0.01);
+    }
+
+    private async void OnHit(HurtBox hurtbox)
+    {
+        AutoloadManager.Game.ShakeCamera(2);
+        Engine.TimeScale = 0.01;
+        using var timer = GetTree().CreateTimer(0.1, true, false, true);
+        await ToSignal(timer, SceneTreeTimer.SignalName.Timeout);
+        Engine.TimeScale = 1;
     }
 
     public void RegisterInteractable(Interactable interactable)
@@ -512,6 +523,7 @@ public partial class Player : CharacterBody2D, IStateMachine<Player.State>
     [Export] public Timer SlideRequestTimer = null!;
     [Export] public GameOverScreen GameOverScreen = null!;
     [Export] public PauseScreen PauseScreen = null!;
+    [Export] public HitBox HitBox = null!;
 
     #endregion
 }

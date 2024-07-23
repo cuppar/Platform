@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b3v1v47yfck3g"]
+[gd_scene load_steps=13 format=3 uid="uid://b3v1v47yfck3g"]
 
 [ext_resource type="Script" path="res://worlds/World.cs" id="1_bu0o6"]
 [ext_resource type="Texture2D" uid="uid://d0a2cnt1s8xyc" path="res://assets/Legacy-Fantasy - High Forest 2.3/Assets/Tree-Assets.png" id="1_k2cqa"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://classes/EntryPoint.cs" id="6_amsx6"]
 [ext_resource type="PackedScene" uid="uid://cjv8hvmweiqil" path="res://enemies/boar.tscn" id="6_cevtd"]
 [ext_resource type="PackedScene" uid="uid://2gy25jiqltqp" path="res://objects/save_stone.tscn" id="10_iuo6g"]
+[ext_resource type="Script" path="res://classes/ShakyCamera.cs" id="12_cguq1"]
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("Camera", "TileMap", "Player")]
 script = ExtResource("1_bu0o6")
@@ -204,7 +205,7 @@ region_enabled = true
 region_rect = Rect2(210, 101, 124, 86)
 
 [node name="Tree-assets13" type="Sprite2D" parent="Decorations/Foreground/Bushes"]
-position = Vector2(659, -298)
+position = Vector2(703, -287)
 texture = ExtResource("1_k2cqa")
 region_enabled = true
 region_rect = Rect2(210, 101, 124, 86)
@@ -216,14 +217,14 @@ region_enabled = true
 region_rect = Rect2(210, 101, 124, 86)
 
 [node name="Tree-assets14" type="Sprite2D" parent="Decorations/Foreground/Bushes"]
-position = Vector2(683, -235)
+position = Vector2(748, -235)
 rotation = 1.26668
 texture = ExtResource("1_k2cqa")
 region_enabled = true
 region_rect = Rect2(210, 101, 124, 86)
 
 [node name="Tree-assets15" type="Sprite2D" parent="Decorations/Foreground/Bushes"]
-position = Vector2(672, -180)
+position = Vector2(747, -181)
 rotation = 2.64212
 texture = ExtResource("1_k2cqa")
 region_enabled = true
@@ -266,7 +267,7 @@ region_enabled = true
 region_rect = Rect2(210, 293, 124, 86)
 
 [node name="Tree-assets11" type="Sprite2D" parent="Decorations/Foreground/Bushes"]
-position = Vector2(694, -127)
+position = Vector2(749, -127)
 texture = ExtResource("1_k2cqa")
 region_enabled = true
 region_rect = Rect2(210, 293, 124, 86)
@@ -332,4 +333,5 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 editor_draw_limits = true
 editor_draw_drag_margin = true
+script = ExtResource("12_cguq1")
 metadata/_edit_lock_ = true

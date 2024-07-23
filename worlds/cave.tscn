@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b0n7mnv6xwi6e"]
+[gd_scene load_steps=10 format=3 uid="uid://b0n7mnv6xwi6e"]
 
 [ext_resource type="Script" path="res://worlds/Cave.cs" id="1_ujm8d"]
 [ext_resource type="TileSet" uid="uid://dphns1ptijoa1" path="res://assets/tiles.tres" id="2_d2lfq"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://classes/EntryPoint.cs" id="6_hc42l"]
 [ext_resource type="PackedScene" uid="uid://cjv8hvmweiqil" path="res://enemies/boar.tscn" id="7_hehdd"]
 [ext_resource type="PackedScene" uid="uid://umje0lkfrv5" path="res://scenes/player.tscn" id="8_1jro2"]
+[ext_resource type="Script" path="res://classes/ShakyCamera.cs" id="9_alrrj"]
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("Camera", "TileMap", "Player")]
 script = ExtResource("1_ujm8d")
@@ -68,6 +69,7 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 editor_draw_limits = true
 editor_draw_drag_margin = true
+script = ExtResource("9_alrrj")
 metadata/_edit_lock_ = true
 
 [connection signal="Died" from="Boar" to="." method="OnBoarDied"]

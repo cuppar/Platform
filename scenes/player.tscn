@@ -2323,7 +2323,7 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "InteractIcon", "SlideRequestTimer", "GameOverScreen", "PauseScreen")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Graphics", "AnimationPlayer", "CoyoteTimer", "JumpRequestTimer", "HandChecker", "FootChecker", "HurtBox", "InvincibleTimer", "InteractIcon", "SlideRequestTimer", "GameOverScreen", "PauseScreen", "HitBox")]
 collision_layer = 2
 script = ExtResource("1_q2an3")
 JumpVelocity = -380.0
@@ -2340,6 +2340,7 @@ InteractIcon = NodePath("InteractIcon")
 SlideRequestTimer = NodePath("Timers/SlideRequestTimer")
 GameOverScreen = NodePath("CanvasLayer/GameOverScreen")
 PauseScreen = NodePath("CanvasLayer/PauseScreen")
+HitBox = NodePath("Graphics/HitBox")
 metadata/_edit_group_ = true
 
 [node name="Graphics" type="Node2D" parent="."]

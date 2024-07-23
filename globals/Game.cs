@@ -15,6 +15,9 @@ public partial class Game : CanvasLayer
     private const string ConfigPath = "user://config.ini";
     private const string AudioConfigSection = "audio";
 
+    [Signal]
+    public delegate void CameraShouldShakyEventHandler(float amount);
+
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         IncludeFields = true,
@@ -51,6 +54,11 @@ public partial class Game : CanvasLayer
             (float)config.GetValue(AudioConfigSection, SoundManager.Bus.SFX.ToString(), 0.5));
         SoundManager.SetVolume(SoundManager.Bus.BGM,
             (float)config.GetValue(AudioConfigSection, SoundManager.Bus.BGM.ToString(), 0.5));
+    }
+
+    public void ShakeCamera(float amount)
+    {
+        EmitSignal(SignalName.CameraShouldShaky, amount);
     }
 
     public void SaveGame()
